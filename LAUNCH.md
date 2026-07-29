@@ -46,7 +46,29 @@ Rationale: bonuses are paid from the **treasury in USDC**, not from token sales 
 sell pressure on $PASS. Each bonus requires a futarchy proposal; by fixing this table
 here, participants know exactly what the team earns and when.
 
-## 5. Post-launch roadmap
+## 5. Operating budget (pre-approved monthly spend)
+
+| Item | Monthly |
+|---|---|
+| Founder salary | $13k |
+| Second developer | $10k |
+| Advisors (2x, part-time) | $10k |
+| Marketing & community (content, KOLs, events) | $8k |
+| Infrastructure & tooling (RPC, hosting, indexing, monitoring) | $1.5k |
+| KYC provider (verification costs) | $1k |
+| Entity, accounting, admin | $1.5k |
+| Contingency | $2k |
+| **Total** | **~$47k/month** |
+
+One-time costs: audit $40k · legal/MiCA structuring $60k · entity setup $15k ·
+listings & integrations $30k · bug bounty program $20k ≈ **$165k**.
+
+Math: 18 months x $47k + $165k ≈ **$1.0M**. Of the $1.8M minimum raise, 20%
+($360k) seeds liquidity pools per the MetaDAO model, leaving $1.44M of treasury —
+a ~$430k buffer on top of the full budget. Any spend above the pre-approved
+budget requires a futarchy proposal.
+
+## 6. Post-launch roadmap
 
 | Quarter | Goal |
 |---|---|
@@ -55,7 +77,7 @@ here, participants know exactly what the team earns and when.
 | Q+3 | Lending integration (pTokens as collateral), $5M TVW |
 | Q+4 | zk-credentials, $PASS insurance staking, CEX conversations |
 
-## 6. Risks (transparent)
+## 7. Risks (transparent)
 
 1. **Regulatory:** wrapped securities remain securities; the legal structure (MiCA)
    is reviewed before mainnet — budget reserved.
@@ -64,12 +86,12 @@ here, participants know exactly what the team earns and when.
 4. **Competition:** large issuers could build this themselves; our edge is neutrality
    (one layer for *all* issuers) and speed on Solana.
 
-## 7. Team
+## 8. Team
 
 [To fill in: founder background + any co-founders/advisors. MetaDAO looks for
 "venture-backable founders" — add LinkedIn/GitHub/track record.]
 
-## 8. Links
+## 9. Links
 
 - Repo: https://github.com/SewnRetirement/passage-protocol
 - Demo: https://sewnretirement.github.io/passage-protocol/

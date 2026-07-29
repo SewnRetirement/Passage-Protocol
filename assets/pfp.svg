@@ -1,0 +1,42 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#0D2A1E"/>
+      <stop offset="55%" stop-color="#07110A"/>
+      <stop offset="100%" stop-color="#04080A"/>
+    </radialGradient>
+    <linearGradient id="neon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00FFA3"/>
+      <stop offset="100%" stop-color="#00D18C"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00FFA3" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#00FFA3"/>
+      <stop offset="55%" stop-color="#7DFFDD"/>
+      <stop offset="100%" stop-color="#00E5FF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="14" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bigglow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="46" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- poort: rondboog-deurframe -->
+  <g filter="url(#glow)">
+    <path d="M 352 736 L 352 468 A 160 160 0 0 1 672 468 L 672 736"
+          stroke="url(#neon)" stroke-width="46" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- stroom die door de poort gaat -->
+  <g filter="url(#bigglow)">
+    <path d="M 150 600 C 320 600, 380 560, 512 560 C 644 560, 704 600, 874 600"
+          stroke="url(#flow)" stroke-width="30" stroke-linecap="round" fill="none"/>
+  </g>
+  <circle cx="512" cy="560" r="26" fill="#B8FFE9" filter="url(#glow)"/>
+</svg>

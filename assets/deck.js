@@ -166,11 +166,11 @@ const tok = (x, y, w, h, head, lines) => {
 };
 tok(0.6, 1.65, 5.9, 2.6, "Fair, high-float launch", [
   "10M $PASS distributed via MetaDAO ICO — no hidden allocations, no VC discounts",
-  "Raise (min $1.8M) goes to a treasury governed by futarchy markets, not the team",
+  "Min $1.8M, capped at $4M — oversubscription refunded pro-rata; treasury governed by futarchy markets, not the team",
   "20% of raise + 2.9M tokens seed protocol-owned liquidity",
 ]);
 tok(6.85, 1.65, 5.9, 2.6, "Aligned team incentives", [
-  "Founder: $16k/mo salary + milestone bonuses up to 25% of the raise — paid in treasury USDC, zero token sell pressure",
+  "Founder: $16k/mo salary + milestone bonuses capped at $1M — paid in treasury USDC, zero token sell pressure",
   "Performance tokens (10%) unlock only at 2x / 4x / 8x above ICO price, 18-month vesting",
   "Every treasury spend requires market approval — funds cannot be drained",
 ]);
@@ -230,7 +230,7 @@ const ask = (x, big, label) => {
   s.addText(big, { x, y: 3.6, w: 3.9, h: 0.7, align: "center", fontFace: F, fontSize: 28, bold: true, color: NEON, margin: 0 });
   s.addText(label, { x: x + 0.25, y: 4.35, w: 3.4, h: 0.6, align: "center", fontFace: F, fontSize: 12, color: MUT, margin: 0 });
 };
-ask(0.6, "$1.8M+", "18 months of runway: team, audit, legal (MiCA), integrations");
+ask(0.6, "$1.8-4M", "min raise to $4M cap: team, audit, legal (MiCA), integrations");
 ask(4.72, "10M $PASS", "high float, futarchy-governed treasury");
 ask(8.84, "Real yield", "protocol fees from day one of mainnet");
 s.addText([

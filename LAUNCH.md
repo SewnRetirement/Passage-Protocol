@@ -27,7 +27,7 @@ is infrastructure with real fees — not a narrative token.
 ## 3. The raise
 
 - **Minimum:** $1.8M (18 months of runway: 2 devs, 2 advisors, audit ~$40k, legal ~$60k, KYC integration, listings)
-- **Uncapped** per the MetaDAO model; overflow → automatic bids at ICO price
+- **Cap: $4M.** If commitments exceed the cap, allocations are pro-rata and the excess is refunded in USDC at TGE (MetaDAO standard)
 - 10M $PASS, high float, no hidden allocations
 
 ## 4. Founder compensation (fixed up front — you consent by participating)
@@ -41,6 +41,9 @@ is infrastructure with real fees — not a narrative token.
 | Milestone bonus 3 | 7.5% of the raise | $25M Total Value Wrapped |
 | Milestone bonus 4 | 7.5% of the raise | $250k cumulative protocol revenue |
 | Performance tokens | 10% of supply (1M) | tranches at 2x / 4x / 8x, ≥18 months vesting |
+
+Milestone bonuses are calculated over **at most the first $4M of the raise** (hard cap
+$1M total), so an oversubscribed raise never inflates team compensation.
 
 Rationale: bonuses are paid from the **treasury in USDC**, not from token sales — no
 sell pressure on $PASS. Each bonus requires a futarchy proposal; by fixing this table

@@ -166,11 +166,11 @@ const tok = (x, y, w, h, head, lines) => {
 };
 tok(0.6, 1.65, 5.9, 2.6, "Fair, high-float launch", [
   "10M $PASS distributed via MetaDAO ICO — no hidden allocations, no VC discounts",
-  "Raise (min $1.5M) goes to a treasury governed by futarchy markets, not the team",
+  "Raise (min $1.8M) goes to a treasury governed by futarchy markets, not the team",
   "20% of raise + 2.9M tokens seed protocol-owned liquidity",
 ]);
 tok(6.85, 1.65, 5.9, 2.6, "Aligned team incentives", [
-  "Team is paid from treasury USDC on measurable milestones — zero token sell pressure",
+  "Founder: $16k/mo salary + milestone bonuses up to 25% of the raise — paid in treasury USDC, zero token sell pressure",
   "Performance tokens (10%) unlock only at 2x / 4x / 8x above ICO price, 18-month vesting",
   "Every treasury spend requires market approval — funds cannot be drained",
 ]);
@@ -180,8 +180,33 @@ tok(0.6, 4.45, 12.15, 2.1, "Why futarchy fits Passage", [
   "MetaDAO launches reward working products with real revenue — Passage arrives with both",
 ]);
 
-// ---------- 8. ROADMAP ----------
+
+// ---------- 8. USE OF FUNDS ----------
 s = p.addSlide(); base(s); footer(s, 8);
+title(s, "Use of funds", "Pre-approved operating budget — every extra spend needs market approval");
+s.addChart(p.ChartType.bar, [{
+  name: "Monthly budget ($k)",
+  labels: ["Founder", "2nd developer", "Advisors (2x)", "Marketing & community", "Infra & tooling", "KYC provider", "Admin & entity", "Contingency"],
+  values: [16, 10, 10, 8, 1.5, 1, 1.5, 2],
+}], {
+  x: 0.6, y: 1.6, w: 7.4, h: 4.9, barDir: "bar",
+  chartColors: [NEON], showLegend: false, showTitle: false,
+  showValue: true, dataLabelPosition: "outEnd", dataLabelColor: TXT, dataLabelFontSize: 10, dataLabelFormatCode: "0.#",
+  catAxisLabelColor: MUT, catAxisLabelFontSize: 11, valAxisHidden: true,
+  valGridLine: { style: "none" }, catGridLine: { style: "none" },
+});
+s.addShape("roundRect", { x: 8.3, y: 1.6, w: 4.4, h: 4.9, rectRadius: 0.12, fill: { color: PANEL }, line: { color: BORDER, width: 1 } });
+s.addText("The math", { x: 8.6, y: 1.85, w: 3.8, h: 0.4, fontFace: F, fontSize: 16, bold: true, color: NEON, margin: 0 });
+s.addText([
+  { text: "~$50k/month operating budget", options: { bullet: true, color: MUT, breakLine: true } },
+  { text: "$165k one-time: audit, legal/MiCA, entity, listings, bug bounty", options: { bullet: true, color: MUT, breakLine: true } },
+  { text: "18 months x $50k + $165k = ~$1.07M", options: { bullet: true, color: MUT, breakLine: true } },
+  { text: "$1.8M raise - 20% to liquidity pools = $1.44M treasury", options: { bullet: true, color: MUT, breakLine: true } },
+  { text: "~$375k buffer on top of the full budget", options: { bullet: true, color: NEON } },
+], { x: 8.6, y: 2.35, w: 3.9, h: 3.9, fontFace: F, fontSize: 13, paraSpaceAfter: 10, margin: 0 });
+
+// ---------- 9. ROADMAP ----------
+s = p.addSlide(); base(s); footer(s, 9);
 title(s, "Roadmap", "From devnet to the RWA liquidity standard");
 const phase = (x, q, items, active) => {
   s.addShape("roundRect", { x, y: 1.9, w: 2.85, h: 3.9, rectRadius: 0.12, fill: { color: active ? PANEL2 : PANEL }, line: { color: active ? NEON : BORDER, width: active ? 1.5 : 1 } });
@@ -194,18 +219,18 @@ phase(3.75, "Q+1", ["Security audit", "Mainnet launch", "First issuer asset live
 phase(6.9, "Q+2", ["KYC provider integration", "2–3 assets wrapped", "pToken/USDC pools live"]);
 phase(10.05, "Q+3/4", ["Lending collateral integrations", "$5M+ Total Value Wrapped", "zk-credentials", "CEX conversations"]);
 
-// ---------- 9. ASK ----------
-s = p.addSlide(); base(s); footer(s, 9);
+// ---------- 10. ASK ----------
+s = p.addSlide(); base(s); footer(s, 10);
 s.addShape("ellipse", { x: 5.0, y: -2.8, w: 3.4, h: 3.4, fill: { color: "0D2A1E", transparency: 20 }, line: { type: "none" } });
 s.addText("Join the launch", { x: 0, y: 1.5, w: 13.33, h: 0.8, align: "center", fontFace: F, fontSize: 40, bold: true, color: TXT, margin: 0 });
-s.addText("Passage is raising a minimum of $1.5M via MetaDAO to take the RWA composability layer to mainnet.",
+s.addText("Passage is raising a minimum of $1.8M via MetaDAO to take the RWA composability layer to mainnet.",
   { x: 1.8, y: 2.5, w: 9.7, h: 0.6, align: "center", fontFace: F, fontSize: 16, color: MUT, margin: 0 });
 const ask = (x, big, label) => {
   s.addShape("roundRect", { x, y: 3.4, w: 3.9, h: 1.7, rectRadius: 0.12, fill: { color: PANEL }, line: { color: BORDER, width: 1 } });
   s.addText(big, { x, y: 3.6, w: 3.9, h: 0.7, align: "center", fontFace: F, fontSize: 28, bold: true, color: NEON, margin: 0 });
   s.addText(label, { x: x + 0.25, y: 4.35, w: 3.4, h: 0.6, align: "center", fontFace: F, fontSize: 12, color: MUT, margin: 0 });
 };
-ask(0.6, "$1.5M+", "18 months runway: audit, legal (MiCA), integrations");
+ask(0.6, "$1.8M+", "18 months of runway: team, audit, legal (MiCA), integrations");
 ask(4.72, "10M $PASS", "high float, futarchy-governed treasury");
 ask(8.84, "Real yield", "protocol fees from day one of mainnet");
 s.addText([

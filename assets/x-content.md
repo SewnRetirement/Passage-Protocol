@@ -2,7 +2,7 @@
 
 ## Profile
 
-**Handle suggestions:** @passageprotocol · @passage_fi · @passagedotfi
+**Handle:** @PassageRWA
 **Name:** Passage Protocol
 **Bio:**
 > The compliance bridge that makes RWAs DeFi-composable. Wrap once, compose everywhere. Built on Solana with Token-2022 transfer hooks. Testnet live ↓

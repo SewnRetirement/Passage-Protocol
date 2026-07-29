@@ -98,4 +98,5 @@ budget requires a futarchy proposal.
 
 - Repo: https://github.com/SewnRetirement/passage-protocol
 - Demo: https://sewnretirement.github.io/passage-protocol/
+- X: https://x.com/PassageRWA
 - Contact: [fill in]

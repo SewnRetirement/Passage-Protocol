@@ -68,6 +68,11 @@ Live demo: GitHub Pages serves `docs/index.html`.
 - [ ] Security audit
 - [ ] Issuer partnerships (Ondo, Maple, Centrifuge)
 
+## Links
+
+- X: [@PassageRWA](https://x.com/PassageRWA)
+- Live demo: https://sewnretirement.github.io/passage-protocol/
+
 ## Disclaimer
 
 MVP / unaudited. Wrapped securities remain securities — legal review

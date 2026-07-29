@@ -34,7 +34,7 @@ is infrastructure with real fees — not a narrative token.
 
 | Component | Size | Condition |
 |---|---|---|
-| Founder salary | $12–15k/month | monthly budget, from day 1 |
+| Founder salary | $16k/month | monthly budget, from day 1 |
 | Advisors (2x, part-time) | $5k/month each | named roles: legal/regulatory (MiCA) and RWA/issuer relations — part of the pre-approved operating budget |
 | Milestone bonus 1 | 5% of the raise | mainnet live + first RWA asset wrapped |
 | Milestone bonus 2 | 5% of the raise | $5M Total Value Wrapped |
@@ -50,7 +50,7 @@ here, participants know exactly what the team earns and when.
 
 | Item | Monthly |
 |---|---|
-| Founder salary | $13k |
+| Founder salary | $16k |
 | Second developer | $10k |
 | Advisors (2x, part-time) | $10k |
 | Marketing & community (content, KOLs, events) | $8k |
@@ -58,14 +58,14 @@ here, participants know exactly what the team earns and when.
 | KYC provider (verification costs) | $1k |
 | Entity, accounting, admin | $1.5k |
 | Contingency | $2k |
-| **Total** | **~$47k/month** |
+| **Total** | **~$50k/month** |
 
 One-time costs: audit $40k · legal/MiCA structuring $60k · entity setup $15k ·
 listings & integrations $30k · bug bounty program $20k ≈ **$165k**.
 
-Math: 18 months x $47k + $165k ≈ **$1.0M**. Of the $1.8M minimum raise, 20%
+Math: 18 months x $50k + $165k ≈ **$1.07M**. Of the $1.8M minimum raise, 20%
 ($360k) seeds liquidity pools per the MetaDAO model, leaving $1.44M of treasury —
-a ~$430k buffer on top of the full budget. Any spend above the pre-approved
+a ~$375k buffer on top of the full budget. Any spend above the pre-approved
 budget requires a futarchy proposal.
 
 ## 6. Post-launch roadmap

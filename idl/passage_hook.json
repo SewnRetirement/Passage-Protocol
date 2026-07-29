@@ -10,11 +10,11 @@
     {
       "name": "initialize_extra_account_meta_list",
       "docs": [
-        "Maakt de ExtraAccountMetaList-PDA voor een pToken-mint aan.",
-        "Definieert welke extra accounts Token-2022 moet meesturen bij Execute:",
-        "5: passage_identity programma (vast adres)",
-        "6: credential-PDA, afgeleid van de owner (offset 32) van het",
-        "ontvangende token-account (account-index 2)"
+        "Creates the ExtraAccountMetaList PDA for a pToken mint.",
+        "Defines which extra accounts Token-2022 must pass along on Execute:",
+        "5: the passage_identity program (fixed address)",
+        "6: credential PDA, derived from the owner (offset 32) of the",
+        "receiving token account (account index 2)"
       ],
       "discriminator": [
         92,
@@ -81,7 +81,7 @@
     {
       "name": "transfer_hook",
       "docs": [
-        "Door Token-2022 aangeroepen bij elke transfer."
+        "Invoked by Token-2022 on every transfer."
       ],
       "discriminator": [
         220,
@@ -161,7 +161,7 @@
     {
       "code": 6000,
       "name": "ReceiverNotVerified",
-      "msg": "Ontvanger is niet geverifieerd (geen geldige Passage-credential)"
+      "msg": "Recipient is not verified (no valid Passage credential)"
     }
   ]
 }

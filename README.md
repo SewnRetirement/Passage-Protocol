@@ -19,6 +19,7 @@ solves this by putting compliance **inside the token itself**:
 | `passage_wrapper` | `HuM2...xagX` | Vault: wrap/unwrap 1:1, fee accrual, collect_fees |
 | `passage_identity` | `8ueu...Gpup` | Registry: verify/revoke wallet credentials (PDA per wallet) |
 | `passage_hook` | `2t8m...13Nf` | Token-2022 transfer hook: blocks transfers to unverified wallets |
+| `passage_pool` | `2Sj6...33aJ` | Gated constant-product AMM: pToken/USDC swaps between verified wallets |
 
 Flow of a pToken transfer:
 
@@ -36,7 +37,7 @@ user → Token-2022 transfer_checked
 # requirements: rust, solana cli (agave 2.1.x), anchor 0.31.1, node 22
 npm install
 anchor build
-anchor test        # starts a local validator, runs all 8 tests
+anchor test        # starts a local validator, runs all 14 tests
 ```
 
 ## Tests
@@ -62,7 +63,7 @@ Live demo: GitHub Pages serves `docs/index.html`.
 - [ ] Devnet deploy + live tx flow in the frontend
 - [ ] KYC provider integration (Civic/Sumsub) → automated credential issuance
 - [ ] zk-credentials instead of plain PDAs (privacy)
-- [ ] AMM pool pToken/USDC (`passage_pool`)
+- [x] AMM pool pToken/USDC (`passage_pool`) — gated swaps, LP tokens, 14/14 tests
 - [ ] $PASS staking / insurance pool (post token launch)
 - [ ] Security audit
 - [ ] Issuer partnerships (Ondo, Maple, Centrifuge)

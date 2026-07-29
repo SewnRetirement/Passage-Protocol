@@ -1,0 +1,22 @@
+<svg width="480" height="120" viewBox="0 0 480 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="neon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00FFA3"/>
+      <stop offset="100%" stop-color="#00E5FF"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="480" height="120" fill="#060B09"/>
+  <!-- gate mark: two pillars with a flow passing through -->
+  <g filter="url(#glow)">
+    <rect x="34" y="24" width="10" height="72" rx="5" fill="url(#neon)"/>
+    <rect x="86" y="24" width="10" height="72" rx="5" fill="url(#neon)"/>
+    <path d="M 20 60 C 45 38, 85 82, 110 60" stroke="url(#neon)" stroke-width="8" stroke-linecap="round" fill="none"/>
+  </g>
+  <text x="136" y="76" font-family="Inter, Segoe UI, sans-serif" font-size="46" font-weight="700" fill="#EAFFF6" letter-spacing="-1">passage</text>
+  <text x="330" y="76" font-family="Inter, Segoe UI, sans-serif" font-size="46" font-weight="700" fill="url(#neon)">.</text>
+  <text x="136" y="100" font-family="Inter, Segoe UI, sans-serif" font-size="14" font-weight="500" fill="#6BFFCB" letter-spacing="4">RWA COMPOSABILITY LAYER</text>
+</svg>

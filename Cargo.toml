@@ -3,6 +3,7 @@ members = [
     "programs/passage_identity",
     "programs/passage_hook",
     "programs/passage_wrapper",
+    "programs/passage_pool",
 ]
 resolver = "2"
 

@@ -10,7 +10,7 @@
     {
       "name": "initialize",
       "docs": [
-        "Init registry; `authority` mag credentials uitgeven/intrekken."
+        "Init the registry; `authority` may issue/revoke credentials."
       ],
       "discriminator": [
         175,
@@ -57,7 +57,7 @@
     {
       "name": "revoke_wallet",
       "docs": [
-        "Trek een credential in (alleen authority). Sluit de PDA."
+        "Revoke a credential (authority only). Closes the PDA."
       ],
       "discriminator": [
         246,
@@ -134,7 +134,7 @@
     {
       "name": "verify_wallet",
       "docs": [
-        "Geef een credential uit aan `wallet` (alleen authority)."
+        "Issue a credential to `wallet` (authority only)."
       ],
       "discriminator": [
         94,

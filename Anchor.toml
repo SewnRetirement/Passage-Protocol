@@ -9,6 +9,7 @@ skip-lint = false
 passage_identity = "8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup"
 passage_hook = "2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf"
 passage_wrapper = "HuM2rUWj5qcuEAWRcGKmpHkh3qwY9Y1m6nsV2UAFxagX"
+passage_pool = "2Sj66HHtHt2fkHQkpFSMyf71nZZ7iNELWnJiNHFo33aJ"
 
 [registry]
 url = "https://api.apr.dev"

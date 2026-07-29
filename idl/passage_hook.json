@@ -1,0 +1,167 @@
+{
+  "address": "2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf",
+  "metadata": {
+    "name": "passage_hook",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Passage Protocol Token-2022 transfer hook: blokkeert transfers naar niet-geverifieerde wallets"
+  },
+  "instructions": [
+    {
+      "name": "initialize_extra_account_meta_list",
+      "docs": [
+        "Maakt de ExtraAccountMetaList-PDA voor een pToken-mint aan.",
+        "Definieert welke extra accounts Token-2022 moet meesturen bij Execute:",
+        "5: passage_identity programma (vast adres)",
+        "6: credential-PDA, afgeleid van de owner (offset 32) van het",
+        "ontvangende token-account (account-index 2)"
+      ],
+      "discriminator": [
+        92,
+        197,
+        174,
+        197,
+        41,
+        124,
+        19,
+        3
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "extra_account_meta_list",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  120,
+                  116,
+                  114,
+                  97,
+                  45,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transfer_hook",
+      "docs": [
+        "Door Token-2022 aangeroepen bij elke transfer."
+      ],
+      "discriminator": [
+        220,
+        57,
+        220,
+        152,
+        126,
+        125,
+        97,
+        168
+      ],
+      "accounts": [
+        {
+          "name": "source_token"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "destination_token"
+        },
+        {
+          "name": "owner"
+        },
+        {
+          "name": "extra_account_meta_list",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  120,
+                  116,
+                  114,
+                  97,
+                  45,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "identity_program",
+          "address": "8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup"
+        },
+        {
+          "name": "credential"
+        }
+      ],
+      "args": [
+        {
+          "name": "_amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ReceiverNotVerified",
+      "msg": "Ontvanger is niet geverifieerd (geen geldige Passage-credential)"
+    }
+  ]
+}

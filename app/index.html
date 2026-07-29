@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passage Protocol — RWA Composability Layer</title>
+<style>
+  :root {
+    --bg: #0b0e14; --panel: #131826; --panel2: #1a2032;
+    --text: #e8ecf4; --muted: #8a94ab; --accent: #4f8cff; --accent2: #34d399;
+    --danger: #f87171; --border: #232b40;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+  .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+  header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent); }
+  .btn { background: var(--accent); color: #fff; border: none; border-radius: 10px;
+         padding: 12px 20px; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+  .btn:hover { opacity: .9; }
+  .btn.secondary { background: var(--panel2); border: 1px solid var(--border); }
+  .btn.green { background: var(--accent2); color: #06281c; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .hero { text-align: center; padding: 48px 0 32px; }
+  .hero h1 { font-size: 34px; letter-spacing: -1px; margin-bottom: 12px; }
+  .hero p { color: var(--muted); font-size: 16px; max-width: 560px; margin: 0 auto; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .stat .label { color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+  .stat .value { font-size: 24px; font-weight: 700; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tab { flex: 1; text-align: center; padding: 10px; border-radius: 10px; cursor: pointer;
+         background: var(--panel2); color: var(--muted); font-weight: 600; border: 1px solid var(--border); }
+  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+  .amount-row { display: flex; background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .amount-row input { flex: 1; background: transparent; border: none; color: var(--text);
+                      font-size: 20px; padding: 14px 16px; outline: none; }
+  .amount-row .token { display: flex; align-items: center; padding: 0 16px; font-weight: 700; color: var(--accent2); }
+  .info-row { display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; padding: 6px 2px; }
+  .info-row .v { color: var(--text); }
+  .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--panel2);
+           border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 13px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); }
+  .dot.ok { background: var(--accent2); }
+  .log { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted);
+         background: var(--panel2); border-radius: 10px; padding: 12px; max-height: 140px; overflow-y: auto; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">passage<span>.</span></div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <span class="badge" id="kycBadge"><span class="dot" id="kycDot"></span><span id="kycText">Niet geverifieerd</span></span>
+      <button class="btn" id="connectBtn">Wallet verbinden</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>Maak je RWA's <span style="color:var(--accent)">DeFi-composable</span></h1>
+    <p>Wrap permissioned real-world assets naar vrij bruikbare pTokens. Compliance in de token zelf — via zk-KYC en Token-2022 transfer hooks op Solana.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="label">Total Value Wrapped</div><div class="value" id="tvw">$0</div></div>
+    <div class="stat"><div class="label">Protocol-fees (30d)</div><div class="value" id="fees">$0</div></div>
+    <div class="stat"><div class="label">Wrap-fee</div><div class="value">0,10%</div></div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" id="tabWrap">Wrap</div>
+      <div class="tab" id="tabUnwrap">Unwrap</div>
+    </div>
+    <div class="field">
+      <label id="inLabel">Je stort (tUSDY — tokenized T-bill)</label>
+      <div class="amount-row">
+        <input type="number" id="amountIn" placeholder="0.00" min="0">
+        <div class="token" id="tokenIn">tUSDY</div>
+      </div>
+    </div>
+    <div class="field">
+      <label id="outLabel">Je ontvangt</label>
+      <div class="amount-row">
+        <input type="number" id="amountOut" placeholder="0.00" disabled>
+        <div class="token" id="tokenOut">pUSDY</div>
+      </div>
+    </div>
+    <div class="info-row"><span>Fee (0,10%)</span><span class="v" id="feeAmount">—</span></div>
+    <div class="info-row"><span>Backing</span><span class="v">1:1 in on-chain vault</span></div>
+    <button class="btn green" style="width:100%; margin-top:14px;" id="actionBtn" disabled>Verbind eerst je wallet</button>
+  </div>
+
+  <div class="card">
+    <div style="font-weight:600; margin-bottom:10px;">Activiteit</div>
+    <div class="log" id="log">Klaar. Verbind een wallet om te beginnen (devnet).</div>
+  </div>
+
+  <footer>Passage Protocol MVP · Solana devnet · programma's: wrapper / identity / transfer-hook</footer>
+</div>
+
+<script type="module">
+import {
+  Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram,
+} from "https://esm.sh/@solana/web3.js@1.98.0";
+
+// ── Config: ingevuld na devnet-deploy ───────────────────────────
+const CONFIG = {
+  cluster: "https://api.devnet.solana.com",
+  wrapperProgram: "HuM2rUWj5qcuEAWRcGKmpHkh3qwY9Y1m6nsV2UAFxagX",
+  identityProgram: "8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup",
+  hookProgram: "2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf",
+  assetMint: "",   // tUSDY devnet mint (vul in: devnet-addresses.json)
+  pMint: "",       // pUSDY devnet mint (vul in: devnet-addresses.json)
+  decimals: 6,
+  feeBps: 10,
+};
+// ────────────────────────────────────────────────────────────────
+
+const TOKEN_PROGRAM = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+const TOKEN_2022 = new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
+const ATA_PROGRAM = new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
+const DISC = { wrap: [178,40,10,189,228,129,186,140], unwrap: [126,175,198,14,212,69,50,44] };
+
+const connection = new Connection(CONFIG.cluster, "confirmed");
+let provider = null, pubkey = null, mode = "wrap";
+const $ = (id) => document.getElementById(id);
+const log = (m) => { const el = $("log"); el.innerHTML = `${new Date().toLocaleTimeString()} · ${m}<br>` + el.innerHTML; };
+
+const ata = (owner, mint, tokenProgram) => PublicKey.findProgramAddressSync(
+  [owner.toBuffer(), tokenProgram.toBuffer(), mint.toBuffer()], ATA_PROGRAM)[0];
+const u64le = (n) => { const b = new Uint8Array(8); new DataView(b.buffer).setBigUint64(0, BigInt(n), true); return b; };
+
+const createAtaIdempotentIx = (payer, owner, mint, tokenProgram) => new TransactionInstruction({
+  programId: ATA_PROGRAM,
+  keys: [
+    { pubkey: payer, isSigner: true, isWritable: true },
+    { pubkey: ata(owner, mint, tokenProgram), isSigner: false, isWritable: true },
+    { pubkey: owner, isSigner: false, isWritable: false },
+    { pubkey: mint, isSigner: false, isWritable: false },
+    { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    { pubkey: tokenProgram, isSigner: false, isWritable: false },
+  ],
+  data: new Uint8Array([1]), // CreateIdempotent
+});
+
+$("connectBtn").onclick = async () => {
+  provider = window.phantom?.solana || window.solana;
+  if (!provider) { log("Geen Solana-wallet gevonden. Installeer Phantom."); return; }
+  try {
+    const res = await provider.connect();
+    pubkey = new PublicKey(res.publicKey.toString());
+    $("connectBtn").textContent = pubkey.toBase58().slice(0, 4) + "…" + pubkey.toBase58().slice(-4);
+    $("actionBtn").disabled = false;
+    $("actionBtn").textContent = mode === "wrap" ? "Wrap tUSDY → pUSDY" : "Unwrap pUSDY → tUSDY";
+    log(`Wallet verbonden: ${pubkey.toBase58()}`);
+    await checkKyc();
+    await refreshStats();
+  } catch { log("Verbinden geannuleerd."); }
+};
+
+async function checkKyc() {
+  const [cred] = PublicKey.findProgramAddressSync(
+    [new TextEncoder().encode("credential"), pubkey.toBuffer()],
+    new PublicKey(CONFIG.identityProgram));
+  const info = await connection.getAccountInfo(cred);
+  const ok = !!info;
+  $("kycDot").classList.toggle("ok", ok);
+  $("kycText").textContent = ok ? "Geverifieerd" : "Niet geverifieerd";
+  if (!ok) log("Deze wallet heeft nog geen Passage-credential. pTokens ontvangen lukt pas na verificatie.");
+}
+
+async function refreshStats() {
+  if (!CONFIG.assetMint) return;
+  try {
+    const assetMint = new PublicKey(CONFIG.assetMint);
+    const [vault] = PublicKey.findProgramAddressSync(
+      [new TextEncoder().encode("vault"), assetMint.toBuffer()], new PublicKey(CONFIG.wrapperProgram));
+    const acc = await connection.getAccountInfo(vault);
+    if (!acc) return;
+    // Vault-layout: 8 disc + 32 authority + 32 asset + 32 pmint + 2 fee + 8 total + 8 fees
+    const dv = new DataView(acc.data.buffer, acc.data.byteOffset);
+    const total = dv.getBigUint64(8 + 96 + 2, true);
+    const fees = dv.getBigUint64(8 + 96 + 2 + 8, true);
+    const d = 10 ** CONFIG.decimals;
+    $("tvw").textContent = "$" + (Number(total) / d).toLocaleString(undefined, { maximumFractionDigits: 0 });
+    $("fees").textContent = "$" + (Number(fees) / d).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  } catch (e) { console.warn(e); }
+}
+
+const setMode = (m) => {
+  mode = m;
+  $("tabWrap").classList.toggle("active", m === "wrap");
+  $("tabUnwrap").classList.toggle("active", m === "unwrap");
+  $("inLabel").textContent = m === "wrap" ? "Je stort (tUSDY — tokenized T-bill)" : "Je stort (pUSDY)";
+  $("tokenIn").textContent = m === "wrap" ? "tUSDY" : "pUSDY";
+  $("tokenOut").textContent = m === "wrap" ? "pUSDY" : "tUSDY";
+  if (pubkey) $("actionBtn").textContent = m === "wrap" ? "Wrap tUSDY → pUSDY" : "Unwrap pUSDY → tUSDY";
+  recalc();
+};
+$("tabWrap").onclick = () => setMode("wrap");
+$("tabUnwrap").onclick = () => setMode("unwrap");
+
+const recalc = () => {
+  const v = parseFloat($("amountIn").value) || 0;
+  const fee = v * CONFIG.feeBps / 10000;
+  $("amountOut").value = v ? (v - fee).toFixed(6) : "";
+  $("feeAmount").textContent = v ? fee.toFixed(6) + " " + $("tokenIn").textContent : "—";
+};
+$("amountIn").oninput = recalc;
+
+$("actionBtn").onclick = async () => {
+  const v = parseFloat($("amountIn").value) || 0;
+  if (!v) { log("Vul een bedrag in."); return; }
+  if (!CONFIG.assetMint || !CONFIG.pMint) {
+    log("CONFIG.assetMint/pMint nog niet ingevuld (draai scripts/setup-devnet.ts).");
+    return;
+  }
+  try {
+    const amount = Math.round(v * 10 ** CONFIG.decimals);
+    const assetMint = new PublicKey(CONFIG.assetMint);
+    const pMint = new PublicKey(CONFIG.pMint);
+    const wrapperProgram = new PublicKey(CONFIG.wrapperProgram);
+    const [vault] = PublicKey.findProgramAddressSync(
+      [new TextEncoder().encode("vault"), assetMint.toBuffer()], wrapperProgram);
+
+    const userAsset = ata(pubkey, assetMint, TOKEN_PROGRAM);
+    const vaultAsset = ata(vault, assetMint, TOKEN_PROGRAM);
+    const userP = ata(pubkey, pMint, TOKEN_2022);
+
+    const keys = [
+      { pubkey: vault, isSigner: false, isWritable: true },
+      { pubkey: assetMint, isSigner: false, isWritable: false },
+      { pubkey: pMint, isSigner: false, isWritable: true },
+      { pubkey: userAsset, isSigner: false, isWritable: true },
+      { pubkey: vaultAsset, isSigner: false, isWritable: true },
+      { pubkey: userP, isSigner: false, isWritable: true },
+      { pubkey: pubkey, isSigner: true, isWritable: true },
+      { pubkey: TOKEN_PROGRAM, isSigner: false, isWritable: false },
+      { pubkey: TOKEN_2022, isSigner: false, isWritable: false },
+    ];
+    const data = new Uint8Array([...DISC[mode], ...u64le(amount)]);
+    const ix = new TransactionInstruction({ programId: wrapperProgram, keys, data });
+
+    const tx = new Transaction().add(
+      createAtaIdempotentIx(pubkey, pubkey, mode === "wrap" ? pMint : assetMint,
+        mode === "wrap" ? TOKEN_2022 : TOKEN_PROGRAM),
+      ix
+    );
+    tx.feePayer = pubkey;
+    tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+    const signed = await provider.signTransaction(tx);
+    const sig = await connection.sendRawTransaction(signed.serialize());
+    log(`${mode} verstuurd: <a href="https://explorer.solana.com/tx/${sig}?cluster=devnet" target="_blank" style="color:var(--accent)">${sig.slice(0, 16)}…</a>`);
+    await connection.confirmTransaction(sig, "confirmed");
+    log(`${mode} bevestigd ✔`);
+    await refreshStats();
+  } catch (e) {
+    log("Fout: " + (e.message ?? e));
+  }
+};
+</script>
+</body>
+</html>

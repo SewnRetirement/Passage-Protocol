@@ -1,0 +1,21 @@
+[toolchain]
+anchor_version = "0.31.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+passage_identity = "8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup"
+passage_hook = "2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf"
+passage_wrapper = "HuM2rUWj5qcuEAWRcGKmpHkh3qwY9Y1m6nsV2UAFxagX"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "/root/.config/solana/id.json"
+
+[scripts]
+test = "npx ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

@@ -1,0 +1,24 @@
+[package]
+name = "passage_hook"
+version = "0.1.0"
+description = "Passage Protocol Token-2022 transfer hook: blokkeert transfers naar niet-geverifieerde wallets"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "passage_hook"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = "0.31.1"
+anchor-spl = "0.31.1"
+passage_identity = { path = "../passage_identity", features = ["cpi"] }
+spl-transfer-hook-interface = "0.8.2"
+spl-tlv-account-resolution = "0.8.1"

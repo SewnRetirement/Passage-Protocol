@@ -1,0 +1,334 @@
+{
+  "address": "8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup",
+  "metadata": {
+    "name": "passage_identity",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Passage Protocol identity registry (KYC attestations)"
+  },
+  "instructions": [
+    {
+      "name": "initialize",
+      "docs": [
+        "Init registry; `authority` mag credentials uitgeven/intrekken."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "revoke_wallet",
+      "docs": [
+        "Trek een credential in (alleen authority). Sluit de PDA."
+      ],
+      "discriminator": [
+        246,
+        86,
+        181,
+        52,
+        10,
+        131,
+        187,
+        223
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "credential",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  114,
+                  101,
+                  100,
+                  101,
+                  110,
+                  116,
+                  105,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "wallet",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "verify_wallet",
+      "docs": [
+        "Geef een credential uit aan `wallet` (alleen authority)."
+      ],
+      "discriminator": [
+        94,
+        27,
+        3,
+        85,
+        233,
+        106,
+        97,
+        236
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "credential",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  114,
+                  101,
+                  100,
+                  101,
+                  110,
+                  116,
+                  105,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "wallet",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Credential",
+      "discriminator": [
+        145,
+        44,
+        68,
+        220,
+        67,
+        46,
+        100,
+        135
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "WalletRevoked",
+      "discriminator": [
+        59,
+        57,
+        185,
+        57,
+        124,
+        33,
+        245,
+        165
+      ]
+    },
+    {
+      "name": "WalletVerified",
+      "discriminator": [
+        15,
+        221,
+        112,
+        236,
+        193,
+        199,
+        134,
+        139
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Credential",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "issued_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WalletRevoked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WalletVerified",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}

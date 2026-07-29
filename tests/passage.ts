@@ -24,7 +24,7 @@ import {
 } from "@solana/spl-token";
 import { assert, expect } from "chai";
 
-// BN robuust ophalen (werkt onder zowel CJS als ESM interop)
+// Resolve BN robustly (works under both CJS and ESM interop)
 const BN = (anchor as any).BN ?? (anchor as any).default?.BN;
 
 describe("Passage Protocol MVP", () => {
@@ -37,9 +37,9 @@ describe("Passage Protocol MVP", () => {
   const hook = anchor.workspace.PassageHook as Program;
   const wrapper = anchor.workspace.PassageWrapper as Program;
 
-  // acteurs
-  const user2 = Keypair.generate(); // geverifieerd
-  const mallory = Keypair.generate(); // NIET geverifieerd
+  // actors
+  const user2 = Keypair.generate(); // verified
+  const mallory = Keypair.generate(); // NOT verified
   const treasury = Keypair.generate();
 
   // token state
@@ -47,7 +47,7 @@ describe("Passage Protocol MVP", () => {
   const pMintKp = Keypair.generate();
   const pMint = pMintKp.publicKey;
   const DECIMALS = 6;
-  const FEE_BPS = 10; // 0,10%
+  const FEE_BPS = 10; // 0.10%
 
   let vaultPda: PublicKey;
   let userAssetAta: PublicKey;
@@ -60,28 +60,28 @@ describe("Passage Protocol MVP", () => {
     )[0];
 
   before(async () => {
-    // SOL voor acteurs
+    // SOL for the actors
     for (const kp of [user2, mallory, treasury]) {
       const sig = await connection.requestAirdrop(kp.publicKey, 2e9);
       await connection.confirmTransaction(sig);
     }
 
-    // 1. Onderliggende RWA-testtoken (klassieke SPL)
+    // 1. Underlying RWA test token (classic SPL)
     assetMint = await createMint(
       connection, payer, payer.publicKey, null, DECIMALS
     );
     userAssetAta = await createAssociatedTokenAccountIdempotent(
       connection, payer, assetMint, payer.publicKey
     );
-    await mintTo(connection, payer, assetMint, userAssetAta, payer, 1_000_000_000); // 1000 tokens
+    await mintTo(connection, payer, assetMint, userAssetAta, payer, 1_000_000_000); // 1,000 tokens
 
-    // 2. Vault-PDA vooraf berekenen
+    // 2. Precompute the vault PDA
     [vaultPda] = PublicKey.findProgramAddressSync(
       [Buffer.from("vault"), assetMint.toBuffer()],
       wrapper.programId
     );
 
-    // 3. pToken-mint (Token-2022) met transfer hook, mint authority = vault-PDA
+    // 3. pToken mint (Token-2022) with transfer hook, mint authority = vault PDA
     const mintLen = getMintLen([ExtensionType.TransferHook]);
     const lamports = await connection.getMinimumBalanceForRentExemption(mintLen);
     const tx = new Transaction().add(
@@ -109,7 +109,7 @@ describe("Passage Protocol MVP", () => {
     );
   });
 
-  it("initialiseert de identity-registry en verifieert wallets", async () => {
+  it("initializes the identity registry and verifies wallets", async () => {
     await identity.methods.initialize().rpc();
     await identity.methods.verifyWallet(payer.publicKey).rpc();
     await identity.methods.verifyWallet(user2.publicKey).rpc();
@@ -120,14 +120,14 @@ describe("Passage Protocol MVP", () => {
     assert.ok(cred.wallet.equals(user2.publicKey));
   });
 
-  it("initialiseert de extra-account-meta-list voor de pToken", async () => {
+  it("initializes the extra-account-meta-list for the pToken", async () => {
     await hook.methods
       .initializeExtraAccountMetaList()
       .accounts({ mint: pMint })
       .rpc();
   });
 
-  it("initialiseert de vault", async () => {
+  it("initializes the vault", async () => {
     await wrapper.methods
       .initializeVault(FEE_BPS)
       .accounts({
@@ -142,7 +142,7 @@ describe("Passage Protocol MVP", () => {
     assert.ok(vault.pMint.equals(pMint));
   });
 
-  it("wrapt: 100 asset in → 99,9 pToken uit (0,10% fee)", async () => {
+  it("wraps: 100 assets in → 99.9 pTokens out (0.10% fee)", async () => {
     const amount = 100_000_000; // 100 tokens
     const expectedFee = (amount * FEE_BPS) / 10_000; // 100_000
     await wrapper.methods
@@ -165,7 +165,7 @@ describe("Passage Protocol MVP", () => {
     assert.equal(Number(vault.accruedFees), expectedFee);
   });
 
-  it("staat pToken-transfer naar een GEVERIFIEERDE wallet toe", async () => {
+  it("allows pToken transfer to a VERIFIED wallet", async () => {
     const destAta = await createAssociatedTokenAccountIdempotent(
       connection, payer, pMint, user2.publicKey, undefined, TOKEN_2022_PROGRAM_ID
     );
@@ -180,7 +180,7 @@ describe("Passage Protocol MVP", () => {
     assert.equal(Number(bal.amount), 10_000_000);
   });
 
-  it("blokkeert pToken-transfer naar een NIET-geverifieerde wallet", async () => {
+  it("blocks pToken transfer to an UNVERIFIED wallet", async () => {
     const malloryAta = await createAssociatedTokenAccountIdempotent(
       connection, payer, pMint, mallory.publicKey, undefined, TOKEN_2022_PROGRAM_ID
     );
@@ -191,17 +191,17 @@ describe("Passage Protocol MVP", () => {
     );
     try {
       await sendAndConfirmTransaction(connection, new Transaction().add(ix), [payer]);
-      assert.fail("transfer naar niet-geverifieerde wallet had moeten falen");
+      assert.fail("transfer to unverified wallet should have failed");
     } catch (e: any) {
-      // moet falen met de hook-error (6000 = 0x1770 ReceiverNotVerified),
-      // niet met een willekeurige andere fout
+      // must fail with the hook error (6000 = 0x1770 ReceiverNotVerified),
+      // not with some arbitrary other error
       const msg = e.toString() + JSON.stringify((e as any).logs ?? []);
       expect(msg).to.match(/0x1770|ReceiverNotVerified|custom program error/);
-      expect(msg).to.not.include("had moeten falen");
+      expect(msg).to.not.include("should have failed");
     }
   });
 
-  it("unwrapt: pToken terug naar asset (met fee)", async () => {
+  it("unwraps: pToken back to asset (with fee)", async () => {
     const amount = 50_000_000; // 50 pTokens
     const expectedFee = (amount * FEE_BPS) / 10_000;
     const before = await getAccount(connection, userAssetAta);
@@ -223,7 +223,7 @@ describe("Passage Protocol MVP", () => {
     assert.equal(Number(after.amount) - Number(before.amount), amount - expectedFee);
   });
 
-  it("int fees naar de treasury", async () => {
+  it("collects fees to the treasury", async () => {
     const treasuryAta = await createAssociatedTokenAccountIdempotent(
       connection, payer, assetMint, treasury.publicKey
     );

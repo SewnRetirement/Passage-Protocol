@@ -1,76 +1,75 @@
-# Passage Protocol — Launch-document (MetaDAO)
+# Passage Protocol — Launch Document (MetaDAO)
 
-*Concept voor de MetaDAO-aanmelding en het publieke launch-doc. Versie 0.1*
+*Draft for the MetaDAO application and the public launch doc. Version 0.1*
 
 ---
 
 ## 1. Pitch
 
-**Passage maakt de $30 miljard aan permissioned RWA's eindelijk DeFi-composable.**
+**Passage makes the $30 billion of permissioned RWAs finally DeFi-composable.**
 
-Tokenized T-bills, fondsen en krediet staan on-chain, maar slechts ~8% circuleert in
-DeFi: KYC-allowlists en transfer agents sluiten open protocollen uit. Passage stopt
-compliance **in de token zelf** — een wrapper (pToken) op Token-2022 met een transfer
-hook die elke transfer on-chain checkt tegen een credential-registry. Resultaat:
-RWA's die je kunt swappen, uitlenen en als onderpand kunt gebruiken, terwijl elke
-houder geverifieerd blijft.
+Tokenized T-bills, funds, and credit sit on-chain, but only ~8% circulates in DeFi:
+KYC allowlists and transfer agents lock open protocols out. Passage puts compliance
+**inside the token itself** — a wrapper (pToken) on Token-2022 with a transfer hook
+that checks every transfer on-chain against a credential registry. The result:
+RWAs you can swap, lend, and use as collateral, while every holder stays verified.
 
-- **Chain:** Solana (RWA's groeien er hard; geen bestaande compliance-laag)
-- **Status:** werkende MVP — 3 programma's, volledige testsuite, devnet
-- **Omzetmodel:** wrap/unwrap-fee (0,10%) + swap-fees (v2) → 100% naar de treasury
+- **Chain:** Solana (RWA adoption is accelerating; no compliance layer exists yet)
+- **Status:** working MVP — 3 programs, full test suite, devnet
+- **Revenue model:** wrap/unwrap fee (0.10%) + swap fees (v2) → 100% to the treasury
 
-## 2. Waarom dit werkt voor futarchy
+## 2. Why this fits futarchy
 
-Elke bestuursvraag is meetbaar in protocol-omzet: nieuwe asset toevoegen? Fee wijzigen?
-Marketingbudget? Markten kunnen de cashflow-impact prijzen. Passage is infra met echte
-fees — geen narratief-token.
+Every governance question is measurable in protocol revenue: add a new asset?
+Change the fee? Marketing budget? Markets can price the cash-flow impact. Passage
+is infrastructure with real fees — not a narrative token.
 
-## 3. De raise
+## 3. The raise
 
-- **Minimum:** $1,5M (18 maanden runway: 2 devs, audit ~$40k, juridisch ~$60k, KYC-integratie, listings)
-- **Uncapped** conform MetaDAO-model; overschot → automatische bids op ICO-prijs
-- 10M $PASS, hoge float, geen verborgen allocaties
+- **Minimum:** $1.5M (18 months of runway: 2 devs, audit ~$40k, legal ~$60k, KYC integration, listings)
+- **Uncapped** per the MetaDAO model; overflow → automatic bids at ICO price
+- 10M $PASS, high float, no hidden allocations
 
-## 4. Founder-compensatie (vooraf vastgelegd — stem je mee in bij deelname)
+## 4. Founder compensation (fixed up front — you consent by participating)
 
-| Component | Omvang | Voorwaarde |
+| Component | Size | Condition |
 |---|---|---|
-| Founder-salaris | $12–15k/mnd | maandbudget, vanaf dag 1 |
-| Milestone-bonus 1 | 5% van de raise | mainnet live + eerste RWA-asset gewrapt |
-| Milestone-bonus 2 | 5% van de raise | $5M Total Value Wrapped |
-| Milestone-bonus 3 | 7,5% van de raise | $25M Total Value Wrapped |
-| Milestone-bonus 4 | 7,5% van de raise | $250k cumulatieve protocol-omzet |
-| Prestatie-tokens | 10% supply (1M) | tranches bij 2x / 4x / 8x, ≥18 mnd vesting |
+| Founder salary | $12–15k/month | monthly budget, from day 1 |
+| Milestone bonus 1 | 5% of the raise | mainnet live + first RWA asset wrapped |
+| Milestone bonus 2 | 5% of the raise | $5M Total Value Wrapped |
+| Milestone bonus 3 | 7.5% of the raise | $25M Total Value Wrapped |
+| Milestone bonus 4 | 7.5% of the raise | $250k cumulative protocol revenue |
+| Performance tokens | 10% of supply (1M) | tranches at 2x / 4x / 8x, ≥18 months vesting |
 
-Rationale: bonussen komen uit de **treasury in USDC**, niet uit tokenverkoop — geen
-sell-pressure op $PASS. Elke bonus vereist een futarchy-proposal; door de tabel hier
-vast te leggen weten deelnemers vooraf precies wat het team wanneer verdient.
+Rationale: bonuses are paid from the **treasury in USDC**, not from token sales — no
+sell pressure on $PASS. Each bonus requires a futarchy proposal; by fixing this table
+here, participants know exactly what the team earns and when.
 
-## 5. Roadmap na launch
+## 5. Post-launch roadmap
 
-| Kwartaal | Doel |
+| Quarter | Goal |
 |---|---|
-| Q+1 | Audit afgerond, mainnet, eerste asset (issuer-partnership) |
-| Q+2 | 2e-3e asset, KYC-provider live, pool pUSDY/USDC |
-| Q+3 | Lending-integratie (pTokens als onderpand), $5M TVW |
-| Q+4 | zk-credentials, insurance-staking $PASS, CEX-gesprekken |
+| Q+1 | Audit complete, mainnet, first asset (issuer partnership) |
+| Q+2 | 2nd–3rd asset, KYC provider live, pUSDY/USDC pool |
+| Q+3 | Lending integration (pTokens as collateral), $5M TVW |
+| Q+4 | zk-credentials, $PASS insurance staking, CEX conversations |
 
-## 6. Risico's (transparant)
+## 6. Risks (transparent)
 
-1. **Regulatoir:** wrapped securities blijven securities; juridische structuur (MiCA)
-   wordt vóór mainnet getoetst — budget gereserveerd.
-2. **Issuer-medewerking:** zonder issuers geen assets; gesprekken starten vóór de ICO.
-3. **Smart-contract-risico:** audit verplicht vóór mainnet; transfer hook is nieuw terrein.
-4. **Concurrentie:** grote issuers kunnen zelf bouwen; onze edge is neutraliteit
-   (één laag voor álle issuers) en snelheid op Solana.
+1. **Regulatory:** wrapped securities remain securities; the legal structure (MiCA)
+   is reviewed before mainnet — budget reserved.
+2. **Issuer cooperation:** no issuers, no assets; conversations start before the ICO.
+3. **Smart-contract risk:** audit required before mainnet; transfer hooks are new territory.
+4. **Competition:** large issuers could build this themselves; our edge is neutrality
+   (one layer for *all* issuers) and speed on Solana.
 
 ## 7. Team
 
-[In te vullen: achtergrond Derk + eventuele mede-founder/adviseurs. MetaDAO vraagt
-om "venture-backable founders" — voeg LinkedIn/GitHub/track record toe.]
+[To fill in: founder background + any co-founders/advisors. MetaDAO looks for
+"venture-backable founders" — add LinkedIn/GitHub/track record.]
 
 ## 8. Links
 
-- Repo: [GitHub-link invullen]
-- Demo: [devnet-frontend-link invullen]
-- Contact: [invullen]
+- Repo: https://github.com/SewnRetirement/passage-protocol
+- Demo: https://sewnretirement.github.io/passage-protocol/
+- Contact: [fill in]

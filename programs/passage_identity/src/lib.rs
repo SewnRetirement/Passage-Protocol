@@ -1,8 +1,8 @@
-//! Passage Identity — on-chain registry van geverifieerde wallets.
+//! Passage Identity — on-chain registry of verified wallets.
 //!
-//! Een off-chain KYC-provider (bijv. Civic/Sumsub) verifieert een gebruiker;
-//! de registry-authority schrijft daarna een Credential-PDA voor die wallet.
-//! Het transfer-hook-programma leest deze PDA om transfers te gaten.
+//! An off-chain KYC provider (e.g. Civic/Sumsub) verifies a user; the registry
+//! authority then writes a Credential PDA for that wallet. The transfer-hook
+//! program reads this PDA to gate transfers.
 
 use anchor_lang::prelude::*;
 
@@ -15,7 +15,7 @@ pub const CREDENTIAL_SEED: &[u8] = b"credential";
 pub mod passage_identity {
     use super::*;
 
-    /// Init registry; `authority` mag credentials uitgeven/intrekken.
+    /// Init the registry; `authority` may issue/revoke credentials.
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let config = &mut ctx.accounts.config;
         config.authority = ctx.accounts.authority.key();
@@ -23,7 +23,7 @@ pub mod passage_identity {
         Ok(())
     }
 
-    /// Geef een credential uit aan `wallet` (alleen authority).
+    /// Issue a credential to `wallet` (authority only).
     pub fn verify_wallet(ctx: Context<VerifyWallet>, wallet: Pubkey) -> Result<()> {
         let cred = &mut ctx.accounts.credential;
         cred.wallet = wallet;
@@ -33,7 +33,7 @@ pub mod passage_identity {
         Ok(())
     }
 
-    /// Trek een credential in (alleen authority). Sluit de PDA.
+    /// Revoke a credential (authority only). Closes the PDA.
     pub fn revoke_wallet(ctx: Context<RevokeWallet>, wallet: Pubkey) -> Result<()> {
         emit!(WalletRevoked { wallet });
         Ok(())

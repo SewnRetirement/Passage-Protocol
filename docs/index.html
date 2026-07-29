@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,20 +56,20 @@
   <header>
     <div class="logo">passage<span>.</span></div>
     <div style="display:flex; gap:10px; align-items:center;">
-      <span class="badge" id="kycBadge"><span class="dot" id="kycDot"></span><span id="kycText">Niet geverifieerd</span></span>
-      <button class="btn" id="connectBtn">Wallet verbinden</button>
+      <span class="badge" id="kycBadge"><span class="dot" id="kycDot"></span><span id="kycText">Not verified</span></span>
+      <button class="btn" id="connectBtn">Connect wallet</button>
     </div>
   </header>
 
   <div class="hero">
-    <h1>Maak je RWA's <span style="color:var(--accent)">DeFi-composable</span></h1>
-    <p>Wrap permissioned real-world assets naar vrij bruikbare pTokens. Compliance in de token zelf — via zk-KYC en Token-2022 transfer hooks op Solana.</p>
+    <h1>Make your RWAs <span style="color:var(--accent)">DeFi-composable</span></h1>
+    <p>Wrap permissioned real-world assets into freely usable pTokens. Compliance lives inside the token — via zk-KYC and Token-2022 transfer hooks on Solana.</p>
   </div>
 
   <div class="stats">
     <div class="stat"><div class="label">Total Value Wrapped</div><div class="value" id="tvw">$0</div></div>
-    <div class="stat"><div class="label">Protocol-fees (30d)</div><div class="value" id="fees">$0</div></div>
-    <div class="stat"><div class="label">Wrap-fee</div><div class="value">0,10%</div></div>
+    <div class="stat"><div class="label">Protocol fees (30d)</div><div class="value" id="fees">$0</div></div>
+    <div class="stat"><div class="label">Wrap fee</div><div class="value">0.10%</div></div>
   </div>
 
   <div class="card">
@@ -78,30 +78,30 @@
       <div class="tab" id="tabUnwrap">Unwrap</div>
     </div>
     <div class="field">
-      <label id="inLabel">Je stort (tUSDY — tokenized T-bill)</label>
+      <label id="inLabel">You deposit (tUSDY — tokenized T-bill)</label>
       <div class="amount-row">
         <input type="number" id="amountIn" placeholder="0.00" min="0">
         <div class="token" id="tokenIn">tUSDY</div>
       </div>
     </div>
     <div class="field">
-      <label id="outLabel">Je ontvangt</label>
+      <label id="outLabel">You receive</label>
       <div class="amount-row">
         <input type="number" id="amountOut" placeholder="0.00" disabled>
         <div class="token" id="tokenOut">pUSDY</div>
       </div>
     </div>
-    <div class="info-row"><span>Fee (0,10%)</span><span class="v" id="feeAmount">—</span></div>
-    <div class="info-row"><span>Backing</span><span class="v">1:1 in on-chain vault</span></div>
-    <button class="btn green" style="width:100%; margin-top:14px;" id="actionBtn" disabled>Verbind eerst je wallet</button>
+    <div class="info-row"><span>Fee (0.10%)</span><span class="v" id="feeAmount">—</span></div>
+    <div class="info-row"><span>Backing</span><span class="v">1:1 in an on-chain vault</span></div>
+    <button class="btn green" style="width:100%; margin-top:14px;" id="actionBtn" disabled>Connect your wallet first</button>
   </div>
 
   <div class="card">
-    <div style="font-weight:600; margin-bottom:10px;">Activiteit</div>
-    <div class="log" id="log">Klaar. Verbind een wallet om te beginnen (devnet).</div>
+    <div style="font-weight:600; margin-bottom:10px;">Activity</div>
+    <div class="log" id="log">Ready. Connect a wallet to get started (devnet).</div>
   </div>
 
-  <footer>Passage Protocol MVP · Solana devnet · programma's: wrapper / identity / transfer-hook</footer>
+  <footer>Passage Protocol MVP · Solana devnet · programs: wrapper / identity / transfer-hook</footer>
 </div>
 
 <script type="module">
@@ -109,14 +109,14 @@ import {
   Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram,
 } from "https://esm.sh/@solana/web3.js@1.98.0";
 
-// ── Config: ingevuld na devnet-deploy ───────────────────────────
+// ── Config: filled in after the devnet deploy ───────────────────
 const CONFIG = {
   cluster: "https://api.devnet.solana.com",
   wrapperProgram: "HuM2rUWj5qcuEAWRcGKmpHkh3qwY9Y1m6nsV2UAFxagX",
   identityProgram: "8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup",
   hookProgram: "2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf",
-  assetMint: "",   // tUSDY devnet mint (vul in: devnet-addresses.json)
-  pMint: "",       // pUSDY devnet mint (vul in: devnet-addresses.json)
+  assetMint: "",   // tUSDY devnet mint (from devnet-addresses.json)
+  pMint: "",       // pUSDY devnet mint (from devnet-addresses.json)
   decimals: 6,
   feeBps: 10,
 };
@@ -151,17 +151,17 @@ const createAtaIdempotentIx = (payer, owner, mint, tokenProgram) => new Transact
 
 $("connectBtn").onclick = async () => {
   provider = window.phantom?.solana || window.solana;
-  if (!provider) { log("Geen Solana-wallet gevonden. Installeer Phantom."); return; }
+  if (!provider) { log("No Solana wallet found. Please install Phantom."); return; }
   try {
     const res = await provider.connect();
     pubkey = new PublicKey(res.publicKey.toString());
     $("connectBtn").textContent = pubkey.toBase58().slice(0, 4) + "…" + pubkey.toBase58().slice(-4);
     $("actionBtn").disabled = false;
     $("actionBtn").textContent = mode === "wrap" ? "Wrap tUSDY → pUSDY" : "Unwrap pUSDY → tUSDY";
-    log(`Wallet verbonden: ${pubkey.toBase58()}`);
+    log(`Wallet connected: ${pubkey.toBase58()}`);
     await checkKyc();
     await refreshStats();
-  } catch { log("Verbinden geannuleerd."); }
+  } catch { log("Connection cancelled."); }
 };
 
 async function checkKyc() {
@@ -171,8 +171,8 @@ async function checkKyc() {
   const info = await connection.getAccountInfo(cred);
   const ok = !!info;
   $("kycDot").classList.toggle("ok", ok);
-  $("kycText").textContent = ok ? "Geverifieerd" : "Niet geverifieerd";
-  if (!ok) log("Deze wallet heeft nog geen Passage-credential. pTokens ontvangen lukt pas na verificatie.");
+  $("kycText").textContent = ok ? "Verified" : "Not verified";
+  if (!ok) log("This wallet has no Passage credential yet. You can only receive pTokens after verification.");
 }
 
 async function refreshStats() {
@@ -197,7 +197,7 @@ const setMode = (m) => {
   mode = m;
   $("tabWrap").classList.toggle("active", m === "wrap");
   $("tabUnwrap").classList.toggle("active", m === "unwrap");
-  $("inLabel").textContent = m === "wrap" ? "Je stort (tUSDY — tokenized T-bill)" : "Je stort (pUSDY)";
+  $("inLabel").textContent = m === "wrap" ? "You deposit (tUSDY — tokenized T-bill)" : "You deposit (pUSDY)";
   $("tokenIn").textContent = m === "wrap" ? "tUSDY" : "pUSDY";
   $("tokenOut").textContent = m === "wrap" ? "pUSDY" : "tUSDY";
   if (pubkey) $("actionBtn").textContent = m === "wrap" ? "Wrap tUSDY → pUSDY" : "Unwrap pUSDY → tUSDY";
@@ -216,9 +216,9 @@ $("amountIn").oninput = recalc;
 
 $("actionBtn").onclick = async () => {
   const v = parseFloat($("amountIn").value) || 0;
-  if (!v) { log("Vul een bedrag in."); return; }
+  if (!v) { log("Enter an amount."); return; }
   if (!CONFIG.assetMint || !CONFIG.pMint) {
-    log("CONFIG.assetMint/pMint nog niet ingevuld (draai scripts/setup-devnet.ts).");
+    log("CONFIG.assetMint/pMint not set yet (run scripts/setup-devnet.ts).");
     return;
   }
   try {
@@ -256,12 +256,12 @@ $("actionBtn").onclick = async () => {
     tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
     const signed = await provider.signTransaction(tx);
     const sig = await connection.sendRawTransaction(signed.serialize());
-    log(`${mode} verstuurd: <a href="https://explorer.solana.com/tx/${sig}?cluster=devnet" target="_blank" style="color:var(--accent)">${sig.slice(0, 16)}…</a>`);
+    log(`${mode} sent: <a href="https://explorer.solana.com/tx/${sig}?cluster=devnet" target="_blank" style="color:var(--accent)">${sig.slice(0, 16)}…</a>`);
     await connection.confirmTransaction(sig, "confirmed");
-    log(`${mode} bevestigd ✔`);
+    log(`${mode} confirmed ✔`);
     await refreshStats();
   } catch (e) {
-    log("Fout: " + (e.message ?? e));
+    log("Error: " + (e.message ?? e));
   }
 };
 </script>

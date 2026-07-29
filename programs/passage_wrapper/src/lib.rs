@@ -1,10 +1,10 @@
-//! Passage Wrapper — de kern van Passage Protocol.
+//! Passage Wrapper — the core of Passage Protocol.
 //!
-//! Gebruikers storten een (permissioned) RWA-token in de vault en ontvangen
-//! 1:1 een pToken (Token-2022 met transfer hook). De pToken is DeFi-composable
-//! maar beweegt alleen tussen geverifieerde wallets. Wrap/unwrap-fees (bps)
-//! blijven in de vault als protocol-omzet en zijn door de authority
-//! (straks: de futarchy-treasury) te innen via `collect_fees`.
+//! Users deposit a (permissioned) RWA token into the vault and receive a
+//! pToken 1:1 (Token-2022 with a transfer hook). The pToken is DeFi-composable
+//! but only moves between verified wallets. Wrap/unwrap fees (bps) stay in the
+//! vault as protocol revenue, collectable by the authority (later: the
+//! futarchy treasury) via `collect_fees`.
 
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
@@ -15,15 +15,15 @@ use anchor_spl::token_interface::{
 declare_id!("HuM2rUWj5qcuEAWRcGKmpHkh3qwY9Y1m6nsV2UAFxagX");
 
 pub const VAULT_SEED: &[u8] = b"vault";
-pub const MAX_FEE_BPS: u16 = 500; // hard cap 5%
+pub const MAX_FEE_BPS: u16 = 500; // hard cap at 5%
 
 #[program]
 pub mod passage_wrapper {
     use super::*;
 
-    /// Maak een vault voor een asset. De pToken-mint moet vooraf zijn
-    /// aangemaakt met de vault-PDA als mint authority en de Passage
-    /// transfer hook als extensie (gebeurt client-side, zie tests).
+    /// Create a vault for an asset. The pToken mint must be created up front
+    /// with the vault PDA as mint authority and the Passage transfer hook
+    /// as an extension (done client-side, see tests).
     pub fn initialize_vault(ctx: Context<InitializeVault>, fee_bps: u16) -> Result<()> {
         require!(fee_bps <= MAX_FEE_BPS, PassageError::FeeTooHigh);
 
@@ -36,7 +36,7 @@ pub mod passage_wrapper {
         vault.accrued_fees = 0;
         vault.bump = ctx.bumps.vault;
 
-        // pToken-mint moet door de vault gecontroleerd worden
+        // the pToken mint must be controlled by the vault
         require!(
             ctx.accounts.p_mint.mint_authority == Some(vault.key()).into(),
             PassageError::InvalidMintAuthority
@@ -49,13 +49,13 @@ pub mod passage_wrapper {
         Ok(())
     }
 
-    /// Stort `amount` asset-tokens; ontvang `amount - fee` pTokens.
+    /// Deposit `amount` asset tokens; receive `amount - fee` pTokens.
     pub fn wrap(ctx: Context<Wrap>, amount: u64) -> Result<()> {
         require!(amount > 0, PassageError::ZeroAmount);
         let fee = fee_for(amount, ctx.accounts.vault.fee_bps);
         let net = amount - fee;
 
-        // asset: gebruiker -> vault
+        // asset: user -> vault
         token_interface::transfer_checked(
             CpiContext::new(
                 ctx.accounts.asset_token_program.to_account_info(),
@@ -70,7 +70,7 @@ pub mod passage_wrapper {
             ctx.accounts.asset_mint.decimals,
         )?;
 
-        // pToken: mint net bedrag naar gebruiker (vault-PDA tekent)
+        // pToken: mint the net amount to the user (vault PDA signs)
         let asset_mint = ctx.accounts.vault.asset_mint;
         let signer_seeds: &[&[&[u8]]] =
             &[&[VAULT_SEED, asset_mint.as_ref(), &[ctx.accounts.vault.bump]]];
@@ -99,13 +99,13 @@ pub mod passage_wrapper {
         Ok(())
     }
 
-    /// Burn `amount` pTokens; ontvang `amount - fee` asset-tokens terug.
+    /// Burn `amount` pTokens; receive `amount - fee` asset tokens back.
     pub fn unwrap(ctx: Context<Unwrap>, amount: u64) -> Result<()> {
         require!(amount > 0, PassageError::ZeroAmount);
         let fee = fee_for(amount, ctx.accounts.vault.fee_bps);
         let net = amount - fee;
 
-        // pToken burnen
+        // burn the pTokens
         token_interface::burn(
             CpiContext::new(
                 ctx.accounts.p_token_program.to_account_info(),
@@ -118,7 +118,7 @@ pub mod passage_wrapper {
             amount,
         )?;
 
-        // asset terug naar gebruiker (vault-PDA tekent)
+        // asset back to the user (vault PDA signs)
         let asset_mint = ctx.accounts.vault.asset_mint;
         let signer_seeds: &[&[&[u8]]] =
             &[&[VAULT_SEED, asset_mint.as_ref(), &[ctx.accounts.vault.bump]]];
@@ -149,7 +149,7 @@ pub mod passage_wrapper {
         Ok(())
     }
 
-    /// Stuur opgebouwde fees (in de onderliggende asset) naar de treasury.
+    /// Send accrued fees (in the underlying asset) to the treasury.
     pub fn collect_fees(ctx: Context<CollectFees>) -> Result<()> {
         let fees = ctx.accounts.vault.accrued_fees;
         require!(fees > 0, PassageError::NothingToCollect);
@@ -326,14 +326,14 @@ pub struct FeesCollected {
 
 #[error_code]
 pub enum PassageError {
-    #[msg("Fee te hoog (max 500 bps)")]
+    #[msg("Fee too high (max 500 bps)")]
     FeeTooHigh,
-    #[msg("pToken mint authority moet de vault-PDA zijn")]
+    #[msg("pToken mint authority must be the vault PDA")]
     InvalidMintAuthority,
-    #[msg("Decimals van pToken en asset komen niet overeen")]
+    #[msg("pToken and asset decimals do not match")]
     DecimalsMismatch,
-    #[msg("Bedrag moet groter dan 0 zijn")]
+    #[msg("Amount must be greater than 0")]
     ZeroAmount,
-    #[msg("Geen fees om te innen")]
+    #[msg("No fees to collect")]
     NothingToCollect,
 }

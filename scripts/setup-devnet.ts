@@ -1,10 +1,10 @@
 /**
- * Devnet-setup voor Passage Protocol.
- * Maakt aan: tUSDY-testmint, pUSDY (Token-2022 + transfer hook),
- * identity-config, extra-account-meta-list, vault. Verifieert de payer-wallet
- * en doet een smoke-test wrap.
+ * Devnet setup for Passage Protocol.
+ * Creates: tUSDY test mint, pUSDY (Token-2022 + transfer hook),
+ * identity config, extra-account-meta-list, vault. Verifies the payer wallet
+ * and performs a smoke-test wrap.
  *
- * Draaien:  ANCHOR_PROVIDER_URL=https://api.devnet.solana.com \
+ * Run:  ANCHOR_PROVIDER_URL=https://api.devnet.solana.com \
  *           ANCHOR_WALLET=~/.config/solana/id.json \
  *           npx ts-node scripts/setup-devnet.ts
  */
@@ -41,17 +41,17 @@ async function main() {
 
   console.log("payer:", payer.publicKey.toBase58());
 
-  // 1. tUSDY-testmint
+  // 1. tUSDY test mint
   const assetMint = await createMint(connection, payer, payer.publicKey, null, DECIMALS);
   console.log("tUSDY mint:", assetMint.toBase58());
   const userAssetAta = await createAssociatedTokenAccountIdempotent(connection, payer, assetMint, payer.publicKey);
   await mintTo(connection, payer, assetMint, userAssetAta, payer, 1_000_000_000_000); // 1M tUSDY
 
-  // 2. Vault-PDA
+  // 2. Vault PDA
   const [vaultPda] = PublicKey.findProgramAddressSync(
     [Buffer.from("vault"), assetMint.toBuffer()], wrapper.programId);
 
-  // 3. pUSDY-mint met transfer hook
+  // 3. pUSDY mint with transfer hook
   const pMintKp = Keypair.generate();
   const mintLen = getMintLen([ExtensionType.TransferHook]);
   const lamports = await connection.getMinimumBalanceForRentExemption(mintLen);
@@ -66,11 +66,11 @@ async function main() {
   await sendAndConfirmTransaction(connection, tx, [payer, pMintKp]);
   console.log("pUSDY mint:", pMintKp.publicKey.toBase58());
 
-  // 4. identity: config + payer verifiëren (idempotent)
-  try { await identity.methods.initialize().rpc(); console.log("identity config aangemaakt"); }
-  catch { console.log("identity config bestond al"); }
-  try { await identity.methods.verifyWallet(payer.publicKey).rpc(); console.log("payer geverifieerd"); }
-  catch { console.log("payer was al geverifieerd"); }
+  // 4. identity: config + verify the payer (idempotent)
+  try { await identity.methods.initialize().rpc(); console.log("identity config created"); }
+  catch { console.log("identity config already existed"); }
+  try { await identity.methods.verifyWallet(payer.publicKey).rpc(); console.log("payer verified"); }
+  catch { console.log("payer was already verified"); }
 
   // 5. meta-list + vault
   await hook.methods.initializeExtraAccountMetaList().accounts({ mint: pMintKp.publicKey }).rpc();
@@ -79,7 +79,7 @@ async function main() {
   }).rpc();
   console.log("vault:", vaultPda.toBase58());
 
-  // 6. smoke-test wrap 100 tUSDY
+  // 6. smoke-test: wrap 100 tUSDY
   const userPAta = getAssociatedTokenAddressSync(pMintKp.publicKey, payer.publicKey, false, TOKEN_2022_PROGRAM_ID);
   await createAssociatedTokenAccountIdempotent(connection, payer, pMintKp.publicKey, payer.publicKey, undefined, TOKEN_2022_PROGRAM_ID);
   await wrapper.methods.wrap(new BN(100_000_000)).accounts({
@@ -99,7 +99,7 @@ async function main() {
     vault: vaultPda.toBase58(),
     feeBps: FEE_BPS, decimals: DECIMALS,
   }, null, 2));
-  console.log("adressen → devnet-addresses.json");
+  console.log("addresses → devnet-addresses.json");
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

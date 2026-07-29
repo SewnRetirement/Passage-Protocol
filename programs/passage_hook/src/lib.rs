@@ -1,10 +1,10 @@
 //! Passage Hook — Token-2022 transfer hook.
 //!
-//! Elke transfer van een pToken triggert dit programma. De hook checkt of de
-//! eigenaar van het ontvangende token-account een geldige Credential-PDA heeft
-//! in het passage_identity-programma. Zo niet → transfer faalt.
-//! Compliance zit hiermee in de token zelf, onafhankelijk van welk protocol
-//! de token gebruikt (DEX, lending, wallet-naar-wallet).
+//! Every pToken transfer triggers this program. The hook checks whether the
+//! owner of the receiving token account holds a valid Credential PDA in the
+//! passage_identity program. If not, the transfer fails.
+//! Compliance lives inside the token itself, regardless of which protocol
+//! moves it (DEX, lending, wallet-to-wallet).
 
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{Mint, TokenAccount};
@@ -21,20 +21,20 @@ pub const META_LIST_SEED: &[u8] = b"extra-account-metas";
 pub mod passage_hook {
     use super::*;
 
-    /// Maakt de ExtraAccountMetaList-PDA voor een pToken-mint aan.
-    /// Definieert welke extra accounts Token-2022 moet meesturen bij Execute:
-    ///   5: passage_identity programma (vast adres)
-    ///   6: credential-PDA, afgeleid van de owner (offset 32) van het
-    ///      ontvangende token-account (account-index 2)
+    /// Creates the ExtraAccountMetaList PDA for a pToken mint.
+    /// Defines which extra accounts Token-2022 must pass along on Execute:
+    ///   5: the passage_identity program (fixed address)
+    ///   6: credential PDA, derived from the owner (offset 32) of the
+    ///      receiving token account (account index 2)
     pub fn initialize_extra_account_meta_list(
         ctx: Context<InitializeExtraAccountMetaList>,
     ) -> Result<()> {
         let metas = vec![
-            // index 5: het identity-programma zelf
+            // index 5: the identity program itself
             ExtraAccountMeta::new_with_pubkey(&passage_identity::ID, false, false)?,
-            // index 6: credential PDA van de ontvanger, seeds = ["credential", dest.owner]
+            // index 6: recipient's credential PDA, seeds = ["credential", dest.owner]
             ExtraAccountMeta::new_external_pda_with_seeds(
-                5, // index van het identity-programma in de accountlijst
+                5, // index of the identity program in the account list
                 &[
                     Seed::Literal {
                         bytes: passage_identity::CREDENTIAL_SEED.to_vec(),
@@ -82,12 +82,12 @@ pub mod passage_hook {
         Ok(())
     }
 
-    /// Door Token-2022 aangeroepen bij elke transfer.
+    /// Invoked by Token-2022 on every transfer.
     pub fn transfer_hook(ctx: Context<TransferHook>, _amount: u64) -> Result<()> {
         let dest_owner = ctx.accounts.destination_token.owner;
 
-        // Credential-account moet bestaan, van het identity-programma zijn
-        // en bij de ontvanger horen.
+        // The credential account must exist, be owned by the identity
+        // program, and belong to the recipient.
         let cred_info = &ctx.accounts.credential;
         require!(
             cred_info.owner == &passage_identity::ID && !cred_info.data_is_empty(),
@@ -106,7 +106,7 @@ pub mod passage_hook {
         Ok(())
     }
 
-    /// Dispatch van de spl-transfer-hook-interface instructies naar Anchor.
+    /// Dispatches spl-transfer-hook-interface instructions to Anchor.
     pub fn fallback<'info>(
         program_id: &Pubkey,
         accounts: &'info [AccountInfo<'info>],
@@ -128,7 +128,7 @@ pub mod passage_hook {
 pub struct InitializeExtraAccountMetaList<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    /// CHECK: PDA, wordt in de instructie zelf aangemaakt
+    /// CHECK: PDA, created inside the instruction itself
     #[account(mut, seeds = [META_LIST_SEED, mint.key().as_ref()], bump)]
     pub extra_account_meta_list: AccountInfo<'info>,
     pub mint: InterfaceAccount<'info, Mint>,
@@ -142,20 +142,20 @@ pub struct TransferHook<'info> {
     pub mint: InterfaceAccount<'info, Mint>,
     #[account(token::mint = mint)]
     pub destination_token: InterfaceAccount<'info, TokenAccount>,
-    /// CHECK: owner van het source-account
+    /// CHECK: owner of the source account
     pub owner: UncheckedAccount<'info>,
-    /// CHECK: de meta-list PDA voor deze mint
+    /// CHECK: the meta-list PDA for this mint
     #[account(seeds = [META_LIST_SEED, mint.key().as_ref()], bump)]
     pub extra_account_meta_list: UncheckedAccount<'info>,
-    /// CHECK: het passage_identity programma
+    /// CHECK: the passage_identity program
     #[account(address = passage_identity::ID)]
     pub identity_program: UncheckedAccount<'info>,
-    /// CHECK: credential-PDA van de ontvanger; gevalideerd in de instructie
+    /// CHECK: recipient's credential PDA; validated in the instruction
     pub credential: UncheckedAccount<'info>,
 }
 
 #[error_code]
 pub enum PassageHookError {
-    #[msg("Ontvanger is niet geverifieerd (geen geldige Passage-credential)")]
+    #[msg("Recipient is not verified (no valid Passage credential)")]
     ReceiverNotVerified,
 }

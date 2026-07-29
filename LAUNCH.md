@@ -26,7 +26,7 @@ is infrastructure with real fees — not a narrative token.
 
 ## 3. The raise
 
-- **Minimum:** $1.5M (18 months of runway: 2 devs, audit ~$40k, legal ~$60k, KYC integration, listings)
+- **Minimum:** $1.8M (18 months of runway: 2 devs, 2 advisors, audit ~$40k, legal ~$60k, KYC integration, listings)
 - **Uncapped** per the MetaDAO model; overflow → automatic bids at ICO price
 - 10M $PASS, high float, no hidden allocations
 
@@ -35,6 +35,7 @@ is infrastructure with real fees — not a narrative token.
 | Component | Size | Condition |
 |---|---|---|
 | Founder salary | $12–15k/month | monthly budget, from day 1 |
+| Advisors (2x, part-time) | $5k/month each | named roles: legal/regulatory (MiCA) and RWA/issuer relations — part of the pre-approved operating budget |
 | Milestone bonus 1 | 5% of the raise | mainnet live + first RWA asset wrapped |
 | Milestone bonus 2 | 5% of the raise | $5M Total Value Wrapped |
 | Milestone bonus 3 | 7.5% of the raise | $25M Total Value Wrapped |

@@ -71,7 +71,7 @@ Live demo: GitHub Pages serves `docs/index.html`.
 ## Links
 
 - X: [@PassageRWA](https://x.com/PassageRWA)
-- Live demo: https://sewnretirement.github.io/passage-protocol/
+- Live demo: https://sewnretirement.github.io/Passage-Protocol/
 
 ## Disclaimer
 

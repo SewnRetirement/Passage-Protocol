@@ -6,7 +6,7 @@
 **Name:** Passage Protocol
 **Bio:**
 > The compliance bridge that makes RWAs DeFi-composable. Wrap once, compose everywhere. Built on Solana with Token-2022 transfer hooks. Testnet live ↓
-**Link:** https://sewnretirement.github.io/passage-protocol/
+**Link:** https://sewnretirement.github.io/Passage-Protocol/
 **Banner:** dark (#060B09) with neon-green gate mark + "Make your RWAs DeFi-composable" (I can generate this when needed)
 
 ---
@@ -67,7 +67,7 @@ No emissions. No ponzinomics. Fees from real assets, from day one.
 Launch: $PASS via @MetaDAOProject — high float, no VC allocations, team paid on milestones from treasury USDC (zero token sell pressure), performance tokens locked until 2x-8x.
 
 Repo: github.com/SewnRetirement/passage-protocol
-Demo: sewnretirement.github.io/passage-protocol
+Demo: sewnretirement.github.io/Passage-Protocol
 
 Passage is coming.
 

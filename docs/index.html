@@ -232,6 +232,16 @@ $("connectBtn").onclick = async () => {
 $("faucetBtn").onclick = async () => {
   if (!pubkey) { log("Connect a wallet first."); return; }
   const btn = $("faucetBtn");
+  // Every transaction needs a fee payer, so we can't sponsor this one: the
+  // visitor has to hold a little devnet SOL before anything can be signed.
+  const sol = await connection.getBalance(pubkey);
+  if (sol < 5_000_000) {
+    log(`This wallet has ${(sol / 1e9).toFixed(4)} devnet SOL — not enough for fees. ` +
+        `Grab some free devnet SOL first: ` +
+        `<a href="https://faucet.solana.com" target="_blank" style="color:var(--accent)">faucet.solana.com</a>, ` +
+        `then try again.`);
+    return;
+  }
   btn.disabled = true;
   btn.textContent = "Requesting…";
   try {
@@ -282,7 +292,7 @@ $("faucetBtn").onclick = async () => {
   } catch (e) {
     const msg = String(e?.message || e);
     if (/User rejected|cancelled/i.test(msg)) log("Request cancelled.");
-    else if (/insufficient|0x1/i.test(msg)) log("Faucet request failed — you may need a little devnet SOL for fees.");
+    else if (/insufficient|0x1\b/i.test(msg)) log(`Not enough devnet SOL for fees. Get some at <a href="https://faucet.solana.com" target="_blank" style="color:var(--accent)">faucet.solana.com</a>.`);
     else log("Faucet request failed: " + msg);
   } finally {
     btn.disabled = false;

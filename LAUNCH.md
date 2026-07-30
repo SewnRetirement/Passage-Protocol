@@ -137,11 +137,11 @@ here, participants know exactly what the team earns and when.
 | **Total** | **~$50k/month** |
 
 One-time costs: audit $40k · legal/MiCA structuring $60k · entity setup $15k ·
-listings & integrations $30k · bug bounty program $20k ≈ **$165k**.
+listings & integrations $30k · bug bounty program $20k · founder KYC attestation $5k ≈ **$170k**.
 
-Math: 18 months x $50k + $165k ≈ **$1.07M**. Of the $1.8M minimum raise, 20%
+Math: 18 months x $50k + $170k ≈ **$1.07M**. Of the $1.8M minimum raise, 20%
 ($360k) seeds liquidity pools per the MetaDAO model, leaving $1.44M of treasury —
-a ~$375k buffer on top of the full budget. Any spend above the pre-approved
+a ~$370k buffer on top of the full budget. Any spend above the pre-approved
 budget requires a futarchy proposal.
 
 ## 7. Post-launch roadmap
@@ -166,15 +166,24 @@ budget requires a futarchy proposal.
 
 **Founder — [@passageRWA](https://x.com/passageRWA)**
 
-Solo founder, building publicly under a pseudonym for now and intending to
-identify himself before the ICO closes. Everything claimed in this document is
-verifiable today rather than promised: five programs live on devnet, 21 passing
-tests including the compliance checks, and a public demo anyone can use without
-asking permission.
+Solo founder, publicly pseudonymous and third-party verified. Identity is
+verified with a KYC attestation provider (Assure DeFi or equivalent) before the
+ICO opens: they hold the documents, the public sees only the attestation, and
+they hand the identity to law enforcement if this project defrauds anyone.
 
-Judge the founder on the work, and hold the identity question open until it
-costs something — which is why the commitment above is dated to the raise, not
-left vague.
+MetaDAO does not require this. It is done because an anonymous founder asking
+for $1.8M should be expected to put something at risk, and this puts real legal
+exposure behind the pseudonym rather than a promise.
+
+Counterparties are a separate question, and there the answer is simply yes.
+Issuers are regulated entities and cannot contract with an anonymous
+counterparty; the MiCA structuring, the operating entity, and payroll all run on
+a named person. Those parties get the identity under NDA. What stays pseudonymous
+is the public profile, not the business.
+
+Everything claimed in this document is verifiable today rather than promised:
+five programs live on devnet, 21 passing tests including the compliance checks,
+and a public demo anyone can use without asking permission.
 
 **Hiring with the raise**
 
@@ -192,6 +201,9 @@ named roles with a defined mandate, not decorative advisors paid in tokens.
 An issuer relationship signed, a completed audit, and a second developer. All
 three are what the raise is for, and all three are conditions on the milestone
 bonuses in §5 rather than promises made here.
+
+Third-party KYC attestation is budgeted as a one-time cost in §6 and completed
+before the ICO opens, not after it closes.
 
 ## 10. Links
 

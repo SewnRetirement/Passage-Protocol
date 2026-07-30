@@ -9,31 +9,31 @@
   body {
     background: #060B09; color: #EAFFF6;
     font-family: 'Segoe UI', 'DejaVu Sans', sans-serif;
-    padding: 11mm 12mm; font-size: 9.2pt; line-height: 1.45;
+    padding: 9mm 11mm; font-size: 8.6pt; line-height: 1.35;
   }
   .neon { color: #00FFA3; }
   .muted { color: #7DA395; }
   header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5mm; }
   .logo { display: flex; align-items: center; gap: 8px; font-size: 20pt; font-weight: 800; letter-spacing: -1px; }
   .tag { font-size: 8pt; letter-spacing: 2.5px; color: #00FFA3; text-align: right; }
-  h1 { font-size: 16.5pt; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2mm; }
-  .lead { color: #7DA395; font-size: 9.5pt; margin-bottom: 4mm; }
-  .stats { display: flex; gap: 4mm; margin-bottom: 4.5mm; }
-  .stat { flex: 1; background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 3mm; text-align: center; }
-  .stat b { display: block; font-size: 15pt; color: #00FFA3; }
+  h1 { font-size: 15pt; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2mm; }
+  .lead { color: #7DA395; font-size: 8.8pt; margin-bottom: 3mm; }
+  .stats { display: flex; gap: 3.5mm; margin-bottom: 3.5mm; }
+  .stat { flex: 1; background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 2.4mm; text-align: center; }
+  .stat b { display: block; font-size: 13.5pt; color: #00FFA3; }
   .stat span { font-size: 7.5pt; color: #7DA395; }
   .cols { display: flex; gap: 5mm; }
   .col { flex: 1; }
-  h2 { font-size: 10pt; font-weight: 700; color: #00FFA3; margin: 3.5mm 0 1.5mm; text-transform: uppercase; letter-spacing: 1px; }
+  h2 { font-size: 9.2pt; font-weight: 700; color: #00FFA3; margin: 2.8mm 0 1.2mm; text-transform: uppercase; letter-spacing: 1px; }
   ul { list-style: none; }
-  li { margin-bottom: 1.4mm; padding-left: 4mm; position: relative; }
+  li { margin-bottom: 1.1mm; padding-left: 4mm; position: relative; }
   li::before { content: "→"; position: absolute; left: 0; color: #00FFA3; }
-  table { width: 100%; border-collapse: collapse; font-size: 8.3pt; }
-  th, td { text-align: left; padding: 1.1mm 1.5mm; border-bottom: 1px solid #1C3229; }
+  table { width: 100%; border-collapse: collapse; font-size: 7.8pt; }
+  th, td { text-align: left; padding: 0.85mm 1.5mm; border-bottom: 1px solid #1C3229; }
   th { color: #7DA395; font-weight: 600; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.5px; }
   td.r, th.r { text-align: right; }
   .total td { color: #00FFA3; font-weight: 700; border-bottom: none; }
-  .box { background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 3mm 3.5mm; margin-top: 2mm; }
+  .box { background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 2.4mm 3mm; margin-top: 1.8mm; font-size: 7.8pt; }
   footer { position: absolute; bottom: 8mm; left: 12mm; right: 12mm; display: flex; justify-content: space-between; font-size: 7.5pt; color: #7DA395; border-top: 1px solid #1C3229; padding-top: 2mm; }
   .flow { font-size: 8.5pt; background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 2.5mm 3mm; margin-bottom: 3mm; text-align: center; color: #EAFFF6; }
 </style>
@@ -53,8 +53,8 @@
   <div class="stats">
     <div class="stat"><b>$30B</b><span>RWAs tokenized on-chain today</span></div>
     <div class="stat"><b>~8%</b><span>actually circulates in DeFi</span></div>
-    <div class="stat"><b>4</b><span>Solana programs, built &amp; tested</span></div>
-    <div class="stat"><b>14/14</b><span>integration tests passing</span></div>
+    <div class="stat"><b>5</b><span>Solana programs, live on devnet</span></div>
+    <div class="stat"><b>21/21</b><span>integration tests passing</span></div>
   </div>
 
   <div class="flow">Deposit a permissioned RWA &nbsp;<span class="neon">→</span>&nbsp; receive a pToken 1:1 (Token-2022 + transfer hook) &nbsp;<span class="neon">→</span>&nbsp; every transfer verifies the recipient on-chain &nbsp;<span class="neon">→</span>&nbsp; freely composable, always compliant</div>
@@ -66,18 +66,25 @@
         <li><b>Compliance travels with the asset,</b> not the venue — protocols stay open, assets stay compliant.</li>
         <li><b>Neutral infrastructure:</b> one layer for every issuer (Ondo, Centrifuge, Maple) and every DeFi venue — we make their assets more valuable.</li>
         <li><b>Working product:</b> vault, identity registry, transfer hook and a gated AMM — open source, live on devnet.</li>
-        <li><b>Real revenue from day one:</b> 0.10% wrap/unwrap fee + 0.25% swap fee, 100% to the treasury. No emissions, no ponzinomics.</li>
+        <li><b>Recurring revenue, not just flow:</b> 5-10 bps/year on wrapped AUM, plus 0.10% wrap/unwrap and venue integrations. No emissions, no ponzinomics.</li>
         <li><b>Regulator-ready:</b> on-chain KYC audit trail on every transfer; MiCA legal structuring budgeted before mainnet.</li>
       </ul>
 
-      <h2>$PASS tokenomics</h2>
-      <ul>
-        <li><b>10M supply,</b> high float — distributed via MetaDAO ICO, no VC allocations, no hidden deals.</li>
-        <li><b>Raise:</b> min $1.8M, capped at $4M. Oversubscription refunded pro-rata in USDC.</li>
-        <li><b>Treasury</b> governed by futarchy markets — every spend above budget needs market approval.</li>
-        <li><b>Team:</b> paid in treasury USDC on milestones (capped $1M); 10% performance tokens locked until 2x/4x/8x, 18-month vesting. Zero token sell pressure.</li>
-        <li><b>20% of raise</b> + 2.9M tokens seed protocol-owned liquidity.</li>
-      </ul>
+      <h2>Revenue model</h2>
+      <table>
+        <tr><th>Line</th><th class="r">Rate</th></tr>
+        <tr><td>Wrapped AUM (recurring)</td><td class="r">5-10 bps / yr</td></tr>
+        <tr><td>Wrap / unwrap</td><td class="r">0.10% each way</td></tr>
+        <tr><td>Venue integration</td><td class="r">per venue / yr</td></tr>
+        <tr><td>Gated AMM swap share</td><td class="r">~4 of 25 bps</td></tr>
+      </table>
+      <div class="box" >
+        Ondo charges <b class="neon">15 bps/yr</b> for tokenization and compliance, on top of
+        BlackRock's 20 bps. At <b class="neon">$2B wrapped</b>, 8 bps is ~$1.6M a year, recurring —
+        a quarter of what a holder already pays, for a token that becomes usable across DeFi.
+        Our customer is the issuer, not the trader.
+      </div>
+
     </div>
 
     <div class="col">
@@ -92,9 +99,9 @@
         <tr><td>KYC provider</td><td class="r">1,000</td></tr>
         <tr><td>Entity, accounting, admin</td><td class="r">1,500</td></tr>
         <tr><td>Contingency</td><td class="r">2,000</td></tr>
-        <tr class="total"><td>Total</td><td class="r">~50,000 / mo</td></tr>
+        <tr class="total"><td>Total</td><td class="r" style="white-space:nowrap">~50,000/mo</td></tr>
       </table>
-      <div class="box" style="font-size:8.3pt">
+      <div class="box" >
         <b class="neon">One-time:</b> audit $40k · legal/MiCA $60k · entity $15k · listings &amp; integrations $30k · bug bounty $20k ≈ <b>$165k</b><br>
         <b class="neon">The math:</b> 18 mo × $50k + $165k ≈ $1.07M. A $1.8M raise leaves $1.44M treasury after liquidity — a ~$375k buffer.
       </div>
@@ -106,6 +113,15 @@
         <tr><td><b>Q+2</b></td><td>KYC provider live · 2-3 assets · pToken/USDC pools</td></tr>
         <tr><td><b>Q+3/4</b></td><td>Lending collateral · $5M+ TVW · zk-credentials</td></tr>
       </table>
+      <h2>$PASS tokenomics</h2>
+      <ul>
+        <li><b>10M supply,</b> high float — distributed via MetaDAO ICO, no VC allocations, no hidden deals.</li>
+        <li><b>Raise:</b> min $1.8M, capped at $4M. Oversubscription refunded pro-rata in USDC.</li>
+        <li><b>Claim on the treasury:</b> the raise stays on-chain; holders can vote it back if confidence drops.</li>
+        <li><b>Staking is a job:</b> stakers underwrite the credential registry and are slashed if it fails — that backstop is what lets an issuer trust it. They earn half of protocol revenue.</li>
+        <li><b>Buyback-and-burn:</b> the other half. Automatic, permissionless, and continuous rather than lumpy.</li>
+        <li><b>Team:</b> milestone USDC from treasury (capped $1M); 10% performance tokens at 2x/4x/8x, 18-month vesting. Zero sell pressure.</li>
+      </ul>
     </div>
   </div>
 

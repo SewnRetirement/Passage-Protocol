@@ -98,8 +98,8 @@ const kpi = (x, big, label) => {
   s.addText(big, { x, y: 4.9, w: 3.0, h: 0.8, align: "center", fontFace: F, fontSize: 40, bold: true, color: NEON, margin: 0 });
   s.addText(label, { x, y: 5.7, w: 3.0, h: 0.6, align: "center", fontFace: F, fontSize: 12, color: MUT, margin: 0 });
 };
-kpi(1.2, "4", "on-chain programs\n(Rust / Anchor)");
-kpi(5.15, "14", "integration tests, all passing\nincl. compliance blocking");
+kpi(1.2, "5", "on-chain programs\nlive on devnet");
+kpi(5.15, "21", "integration tests, all passing\nincl. compliance blocking");
 kpi(9.1, "100%", "open source\ngithub.com/SewnRetirement");
 
 // ---------- 5. MARKET ----------
@@ -130,29 +130,33 @@ s.addText([
 
 // ---------- 6. BUSINESS MODEL ----------
 s = p.addSlide(); base(s); footer(s, 6);
-title(s, "Real fees, from day one", "Every dollar of volume pays the protocol");
+title(s, "Recurring revenue, not just flow", "A fee on assets held, not only on assets moved");
 const fee = (x, big, label, sub) => {
   s.addShape("roundRect", { x, y: 1.7, w: 3.9, h: 2.4, rectRadius: 0.12, fill: { color: PANEL }, line: { color: BORDER, width: 1 } });
-  s.addText(big, { x, y: 2.0, w: 3.9, h: 0.9, align: "center", fontFace: F, fontSize: 40, bold: true, color: NEON, margin: 0 });
+  s.addText(big, { x, y: 2.0, w: 3.9, h: 0.9, align: "center", fontFace: F, fontSize: 38, bold: true, color: NEON, margin: 0 });
   s.addText(label, { x: x + 0.25, y: 2.95, w: 3.4, h: 0.4, align: "center", fontFace: F, fontSize: 14, bold: true, color: TXT, margin: 0 });
   s.addText(sub, { x: x + 0.25, y: 3.4, w: 3.4, h: 0.6, align: "center", fontFace: F, fontSize: 11, color: MUT, margin: 0 });
 };
-fee(0.6, "0.10%", "Wrap / unwrap fee", "on every asset entering or leaving the vault");
-fee(4.72, "0.25%", "Swap fee", "on every pool trade (LP share; protocol cut via governance)");
-fee(8.84, "100%", "To the treasury", "all protocol revenue flows to token-holder governed treasury");
-s.addText("Illustrative annual revenue at scale", { x: 0.6, y: 4.5, w: 12, h: 0.4, fontFace: F, fontSize: 14, bold: true, color: TXT, margin: 0 });
+fee(0.6, "8 bps", "Per year on wrapped AUM", "the core line — scales with assets held, not churn");
+fee(4.72, "0.10%", "Wrap / unwrap", "each way, on assets entering or leaving the vault");
+fee(8.84, "Per venue", "Integration fee", "every pool holding pTokens needs a credential");
+
+s.addText("Ondo charges 15 bps a year for tokenization and compliance, on top of BlackRock's 20 bps for BUIDL. Passage asks a fraction of that — and makes the issuer's asset usable across DeFi.",
+  { x: 0.6, y: 4.25, w: 12.15, h: 0.4, fontFace: F, fontSize: 12, color: MUT, margin: 0 });
+
+s.addText("Annual protocol revenue by assets wrapped", { x: 0.6, y: 4.75, w: 12, h: 0.4, fontFace: F, fontSize: 14, bold: true, color: TXT, margin: 0 });
 s.addChart(p.ChartType.bar, [{
   name: "Annual protocol revenue ($M)",
-  labels: ["$100M TVW", "$500M TVW", "$2B TVW"],
-  values: [0.6, 3.0, 12.0],
+  labels: ["$100M wrapped", "$500M wrapped", "$2B wrapped"],
+  values: [0.18, 0.9, 3.6],
 }], {
-  x: 0.6, y: 4.95, w: 12.1, h: 1.9, barDir: "bar",
+  x: 0.6, y: 5.2, w: 12.1, h: 1.65, barDir: "bar",
   chartColors: [NEON], showLegend: false, showTitle: false,
-  showValue: true, dataLabelPosition: "outEnd", dataLabelColor: TXT, dataLabelFontSize: 11, dataLabelFormatCode: "0.#",
+  showValue: true, dataLabelPosition: "outEnd", dataLabelColor: TXT, dataLabelFontSize: 11, dataLabelFormatCode: "0.00",
   catAxisLabelColor: MUT, valAxisLabelColor: MUT, valAxisHidden: true,
   valGridLine: { style: "none" }, catGridLine: { style: "none" },
 });
-s.addText("Assumes 3x annual turnover (wrap+unwrap) plus modest swap volume. TVW = Total Value Wrapped.",
+s.addText("Assumes 8 bps a year on wrapped assets and 50% annual turnover — RWA holders hold for years, so we do not model high churn.",
   { x: 0.6, y: 6.85, w: 12.1, h: 0.3, fontFace: F, fontSize: 9, italic: true, color: MUT, margin: 0 });
 
 // ---------- 7. TOKEN & LAUNCH ----------
@@ -174,10 +178,15 @@ tok(6.85, 1.65, 5.9, 2.6, "Aligned team incentives", [
   "Performance tokens (10%) unlock only at 2x / 4x / 8x above ICO price, 18-month vesting",
   "Every treasury spend requires market approval — funds cannot be drained",
 ]);
-tok(0.6, 4.45, 12.15, 2.1, "Why futarchy fits Passage", [
-  "Every governance question — add an asset, change a fee, fund a listing — has a measurable impact on protocol revenue",
-  "Traders with real capital price each decision; cash-flow infrastructure is exactly what decision markets value best",
-  "MetaDAO launches reward working products with real revenue — Passage arrives with both",
+tok(0.6, 4.45, 5.9, 2.1, "Why hold $PASS", [
+  "A claim on the treasury: the raise stays on-chain and holders can vote it back if confidence drops",
+  "Staking is a job — stakers underwrite the credential registry and are slashed if it fails, earning half of protocol revenue",
+  "Issuers who stake pay a lower fee: our customers hold the token because it saves them money",
+]);
+tok(6.85, 4.45, 5.9, 2.1, "Buyback-and-burn", [
+  "The other half of revenue buys $PASS on the market and burns it",
+  "Automatic and permissionless — anyone can trigger it, so it never depends on the team",
+  "Continuous and rate-limited, not one large scheduled buy that bots can front-run",
 ]);
 
 

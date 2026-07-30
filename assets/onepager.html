@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    background: #060B09; color: #EAFFF6;
+    font-family: 'Segoe UI', 'DejaVu Sans', sans-serif;
+    padding: 11mm 12mm; font-size: 9.2pt; line-height: 1.45;
+  }
+  .neon { color: #00FFA3; }
+  .muted { color: #7DA395; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5mm; }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 20pt; font-weight: 800; letter-spacing: -1px; }
+  .tag { font-size: 8pt; letter-spacing: 2.5px; color: #00FFA3; text-align: right; }
+  h1 { font-size: 16.5pt; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2mm; }
+  .lead { color: #7DA395; font-size: 9.5pt; margin-bottom: 4mm; }
+  .stats { display: flex; gap: 4mm; margin-bottom: 4.5mm; }
+  .stat { flex: 1; background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 3mm; text-align: center; }
+  .stat b { display: block; font-size: 15pt; color: #00FFA3; }
+  .stat span { font-size: 7.5pt; color: #7DA395; }
+  .cols { display: flex; gap: 5mm; }
+  .col { flex: 1; }
+  h2 { font-size: 10pt; font-weight: 700; color: #00FFA3; margin: 3.5mm 0 1.5mm; text-transform: uppercase; letter-spacing: 1px; }
+  ul { list-style: none; }
+  li { margin-bottom: 1.4mm; padding-left: 4mm; position: relative; }
+  li::before { content: "→"; position: absolute; left: 0; color: #00FFA3; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.3pt; }
+  th, td { text-align: left; padding: 1.1mm 1.5mm; border-bottom: 1px solid #1C3229; }
+  th { color: #7DA395; font-weight: 600; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.5px; }
+  td.r, th.r { text-align: right; }
+  .total td { color: #00FFA3; font-weight: 700; border-bottom: none; }
+  .box { background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 3mm 3.5mm; margin-top: 2mm; }
+  footer { position: absolute; bottom: 8mm; left: 12mm; right: 12mm; display: flex; justify-content: space-between; font-size: 7.5pt; color: #7DA395; border-top: 1px solid #1C3229; padding-top: 2mm; }
+  .flow { font-size: 8.5pt; background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 2.5mm 3mm; margin-bottom: 3mm; text-align: center; color: #EAFFF6; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <svg width="34" height="34" viewBox="0 0 1024 1024"><path d="M 352 736 L 352 468 A 160 160 0 0 1 672 468 L 672 736" stroke="#00FFA3" stroke-width="60" stroke-linecap="round" fill="none"/><path d="M 190 585 C 340 585, 400 545, 512 545 C 624 545, 684 585, 834 585" stroke="#00E5FF" stroke-width="34" stroke-linecap="round" fill="none" opacity="0.85"/></svg>
+      passage<span class="neon">.</span>
+    </div>
+    <div class="tag">SOLANA · TOKEN-2022 · REAL YIELD<br><span class="muted" style="letter-spacing:0.5px">One-pager · 2026</span></div>
+  </header>
+
+  <h1>The compliance bridge that makes RWAs <span class="neon">DeFi-composable</span></h1>
+  <p class="lead">$30B of tokenized real-world assets sit on-chain, but only ~8% can move in DeFi — locked behind KYC allowlists and transfer agents. Passage puts compliance inside the token itself, so RWAs can finally be swapped, lent, and used as collateral while every holder stays verified.</p>
+
+  <div class="stats">
+    <div class="stat"><b>$30B</b><span>RWAs tokenized on-chain today</span></div>
+    <div class="stat"><b>~8%</b><span>actually circulates in DeFi</span></div>
+    <div class="stat"><b>4</b><span>Solana programs, built &amp; tested</span></div>
+    <div class="stat"><b>14/14</b><span>integration tests passing</span></div>
+  </div>
+
+  <div class="flow">Deposit a permissioned RWA &nbsp;<span class="neon">→</span>&nbsp; receive a pToken 1:1 (Token-2022 + transfer hook) &nbsp;<span class="neon">→</span>&nbsp; every transfer verifies the recipient on-chain &nbsp;<span class="neon">→</span>&nbsp; freely composable, always compliant</div>
+
+  <div class="cols">
+    <div class="col">
+      <h2>Why Passage wins</h2>
+      <ul>
+        <li><b>Compliance travels with the asset,</b> not the venue — protocols stay open, assets stay compliant.</li>
+        <li><b>Neutral infrastructure:</b> one layer for every issuer (Ondo, Centrifuge, Maple) and every DeFi venue — we make their assets more valuable.</li>
+        <li><b>Working product:</b> vault, identity registry, transfer hook and a gated AMM — open source, live on devnet.</li>
+        <li><b>Real revenue from day one:</b> 0.10% wrap/unwrap fee + 0.25% swap fee, 100% to the treasury. No emissions, no ponzinomics.</li>
+        <li><b>Regulator-ready:</b> on-chain KYC audit trail on every transfer; MiCA legal structuring budgeted before mainnet.</li>
+      </ul>
+
+      <h2>$PASS tokenomics</h2>
+      <ul>
+        <li><b>10M supply,</b> high float — distributed via MetaDAO ICO, no VC allocations, no hidden deals.</li>
+        <li><b>Raise:</b> min $1.8M, capped at $4M. Oversubscription refunded pro-rata in USDC.</li>
+        <li><b>Treasury</b> governed by futarchy markets — every spend above budget needs market approval.</li>
+        <li><b>Team:</b> paid in treasury USDC on milestones (capped $1M); 10% performance tokens locked until 2x/4x/8x, 18-month vesting. Zero token sell pressure.</li>
+        <li><b>20% of raise</b> + 2.9M tokens seed protocol-owned liquidity.</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h2>Operating budget (pre-approved)</h2>
+      <table>
+        <tr><th>Monthly</th><th class="r">USD</th></tr>
+        <tr><td>Founder</td><td class="r">16,000</td></tr>
+        <tr><td>Second developer</td><td class="r">10,000</td></tr>
+        <tr><td>Advisors (2x, part-time: legal/MiCA + issuer relations)</td><td class="r">10,000</td></tr>
+        <tr><td>Marketing &amp; community</td><td class="r">8,000</td></tr>
+        <tr><td>Infrastructure &amp; tooling</td><td class="r">1,500</td></tr>
+        <tr><td>KYC provider</td><td class="r">1,000</td></tr>
+        <tr><td>Entity, accounting, admin</td><td class="r">1,500</td></tr>
+        <tr><td>Contingency</td><td class="r">2,000</td></tr>
+        <tr class="total"><td>Total</td><td class="r">~50,000 / mo</td></tr>
+      </table>
+      <div class="box" style="font-size:8.3pt">
+        <b class="neon">One-time:</b> audit $40k · legal/MiCA $60k · entity $15k · listings &amp; integrations $30k · bug bounty $20k ≈ <b>$165k</b><br>
+        <b class="neon">The math:</b> 18 mo × $50k + $165k ≈ $1.07M. A $1.8M raise leaves $1.44M treasury after liquidity — a ~$375k buffer.
+      </div>
+
+      <h2>Roadmap</h2>
+      <table>
+        <tr><td><b>Now</b></td><td>MVP on devnet · open source · community build-up</td></tr>
+        <tr><td><b>Q+1</b></td><td>Audit · mainnet · first issuer asset · MetaDAO ICO</td></tr>
+        <tr><td><b>Q+2</b></td><td>KYC provider live · 2-3 assets · pToken/USDC pools</td></tr>
+        <tr><td><b>Q+3/4</b></td><td>Lending collateral · $5M+ TVW · zk-credentials</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <span>github.com/SewnRetirement/passage-protocol</span>
+    <span>sewnretirement.github.io/passage-protocol</span>
+    <span>x.com/PassageRWA</span>
+  </footer>
+</body>
+</html>

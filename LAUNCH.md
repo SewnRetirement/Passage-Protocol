@@ -164,12 +164,38 @@ budget requires a futarchy proposal.
 
 ## 9. Team
 
-[To fill in: founder background + any co-founders/advisors. MetaDAO looks for
-"venture-backable founders" — add LinkedIn/GitHub/track record.]
+**Founder — [@passageRWA](https://x.com/passageRWA)**
+
+Solo founder, building publicly under a pseudonym for now and intending to
+identify himself before the ICO closes. Everything claimed in this document is
+verifiable today rather than promised: five programs live on devnet, 21 passing
+tests including the compliance checks, and a public demo anyone can use without
+asking permission.
+
+Judge the founder on the work, and hold the identity question open until it
+costs something — which is why the commitment above is dated to the raise, not
+left vague.
+
+**Hiring with the raise**
+
+| Role | When | Why |
+|---|---|---|
+| Second Solana developer | month 1 | Removes the single point of failure before mainnet |
+| Advisor — legal / regulatory (MiCA) | month 1 | Wrapped securities stay securities; the structure has to be right before mainnet |
+| Advisor — RWA / issuer relations | month 1 | The whole business depends on issuers saying yes; that needs someone with the relationships |
+
+Both advisor seats are part-time at $5k/month and are budgeted in §6. They are
+named roles with a defined mandate, not decorative advisors paid in tokens.
+
+**What this team does not yet have**
+
+An issuer relationship signed, a completed audit, and a second developer. All
+three are what the raise is for, and all three are conditions on the milestone
+bonuses in §5 rather than promises made here.
 
 ## 10. Links
 
 - Repo: https://github.com/SewnRetirement/passage-protocol
 - Demo: https://sewnretirement.github.io/Passage-Protocol/
 - X: https://x.com/PassageRWA
-- Contact: [fill in]
+- Contact: DM [@passageRWA](https://x.com/passageRWA) on X

@@ -112,10 +112,25 @@
   <footer>Passage Protocol MVP · Solana devnet · programs: wrapper / identity / transfer-hook</footer>
 </div>
 
+<script>
+// Failsafe: if the web3.js module never loads (network/CDN issue), the page
+// would otherwise sit there silently with dead buttons. Tell the user instead.
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    if (!window.__passageReady) {
+      const el = document.getElementById("log");
+      if (el) el.innerHTML =
+        "Could not load the Solana library (network or CDN blocked). " +
+        "Try a different network, or reload the page.<br>" + el.innerHTML;
+    }
+  }, 10000);
+});
+</script>
 <script type="module">
 import {
   Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram,
 } from "https://esm.sh/@solana/web3.js@1.98.0";
+window.__passageReady = true;
 
 // ── Config: filled in after the devnet deploy ───────────────────
 const CONFIG = {
@@ -157,9 +172,23 @@ const createAtaIdempotentIx = (payer, owner, mint, tokenProgram) => new Transact
   data: new Uint8Array([1]), // CreateIdempotent
 });
 
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
 $("connectBtn").onclick = async () => {
   provider = window.phantom?.solana || window.solana;
-  if (!provider) { log("No Solana wallet found. Please install Phantom."); return; }
+  if (!provider) {
+    if (isMobile) {
+      // Mobile browsers don't get a wallet injected; Phantom only exposes one
+      // inside its own in-app browser. Hand the user off via a deeplink.
+      const deeplink = "https://phantom.app/ul/browse/" +
+        encodeURIComponent(location.href) + "?ref=" + encodeURIComponent(location.origin);
+      log(`Opening in the Phantom app… <a href="${deeplink}" style="color:var(--accent)">tap here if nothing happens</a>`);
+      location.href = deeplink;
+      return;
+    }
+    log("No Solana wallet found. Install the Phantom browser extension, then reload.");
+    return;
+  }
   try {
     const res = await provider.connect();
     pubkey = new PublicKey(res.publicKey.toString());

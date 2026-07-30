@@ -59,8 +59,14 @@ and can then wrap — and an oversized or non-admin drip change is rejected.
 
 ## Frontend
 
-`app/index.html` — standalone demo UI (wrap/unwrap, wallet connect, KYC badge).
-Live demo: GitHub Pages serves `docs/index.html`, wired to the devnet deployment.
+`app/index.html` — standalone demo UI (wrap/unwrap, gated swap, wallet connect,
+KYC badge). Live demo: GitHub Pages serves `docs/index.html`, wired to the
+devnet deployment.
+
+The full round trip is playable: get test tUSDY, wrap it into pUSDY, then trade
+that pUSDY against tUSDC in the gated AMM and back again. The pool holds a
+credential of its own — without one, the transfer hook would refuse to let
+pTokens into it.
 
 On mobile, wallets are not injected into the browser, so "Connect wallet" hands
 off to Phantom's in-app browser via a deeplink.

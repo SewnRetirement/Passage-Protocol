@@ -105,6 +105,7 @@
     <div class="tabs">
       <div class="tab active" id="tabWrap">Wrap</div>
       <div class="tab" id="tabUnwrap">Unwrap</div>
+      <div class="tab" id="tabSwap">Swap</div>
     </div>
     <div class="field">
       <div class="field-head">
@@ -116,6 +117,9 @@
         <div class="token" id="tokenIn">tUSDY</div>
       </div>
     </div>
+    <div id="flipRow" style="display:none; text-align:center; margin:-6px 0 6px;">
+      <button type="button" class="maxbtn" id="flipBtn" style="padding:0">⇅ flip direction</button>
+    </div>
     <div class="field">
       <div class="field-head">
         <label id="outLabel">You receive</label>
@@ -126,8 +130,9 @@
         <div class="token" id="tokenOut">pUSDY</div>
       </div>
     </div>
-    <div class="info-row"><span>Fee (0.10%)</span><span class="v" id="feeAmount">—</span></div>
-    <div class="info-row"><span>Backing</span><span class="v">1:1 in an on-chain vault</span></div>
+    <div class="info-row"><span id="feeLabel">Fee (0.10%)</span><span class="v" id="feeAmount">—</span></div>
+    <div class="info-row" id="backingRow"><span>Backing</span><span class="v">1:1 in an on-chain vault</span></div>
+    <div class="info-row" id="poolRow" style="display:none"><span>Pool liquidity</span><span class="v" id="poolLiquidity">—</span></div>
     <button class="btn green" style="width:100%; margin-top:14px;" id="actionBtn" disabled>Connect your wallet first</button>
     <button class="btn secondary" style="width:100%; margin-top:10px;" id="faucetBtn">Get test tokens</button>
     <p style="color:var(--muted); font-size:12px; text-align:center; margin-top:10px;">
@@ -165,6 +170,7 @@ window.addEventListener("load", () => {
 <script type="module">
 import {
   Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram,
+  ComputeBudgetProgram,
 } from "https://esm.sh/@solana/web3.js@1.98.0";
 window.__passageReady = true;
 
@@ -177,8 +183,13 @@ const CONFIG = {
   assetMint: "B6Z7EVH1SonTGCWKzH4a69Lw1MehGjUuUSR4iNXFfJMz",   // tUSDY devnet mint
   pMint: "82Gacf3dnd6CRTcnzvKk37o9r1JzCzR6krJt7y2jaSgW",       // pUSDY devnet mint
   faucetProgram: "7e2xLqS525PMSrr1Wx6zqamcHCUvsaS3bGCZVmPA49XR",
+  poolProgram: "2Sj66HHtHt2fkHQkpFSMyf71nZZ7iNELWnJiNHFo33aJ",
+  pool: "2J3oA8q3Zjut2hynG7mVGfeZyy7962ryFms5bmd3eYrs",
+  quoteMint: "B3L4QrvG7fAHXDgPc3HHSW4ggP7DpLJV4uS8ccMGN72u",
+  metaList: "72bfZpjz3fenYV12J2iGSPVoFPhKfaKxYWgS1of8nYbY",
   decimals: 6,
   feeBps: 10,
+  swapFeeBps: 25,
 };
 // ────────────────────────────────────────────────────────────────
 
@@ -189,6 +200,7 @@ const DISC = {
   wrap: [178,40,10,189,228,129,186,140],
   unwrap: [126,175,198,14,212,69,50,44],
   claim: [62,198,214,193,213,159,108,210],
+  swap: [248,198,158,145,225,117,135,200],
 };
 
 const connection = new Connection(CONFIG.cluster, "confirmed");
@@ -240,6 +252,7 @@ $("connectBtn").onclick = async () => {
     await checkKyc();
     await refreshStats();
     await refreshBalances();
+    await refreshPool();
   } catch { log("Connection cancelled."); }
 };
 
@@ -306,6 +319,7 @@ $("faucetBtn").onclick = async () => {
     await checkKyc();
     await refreshStats();
     await refreshBalances();
+    await refreshPool();
   } catch (e) {
     const msg = String(e?.message || e);
     if (/User rejected|cancelled/i.test(msg)) log("Request cancelled.");
@@ -346,19 +360,60 @@ async function refreshStats() {
   } catch (e) { console.warn(e); }
 }
 
+// In swap mode, which way round are we trading?
+let sellP = true; // true: pUSDY -> tUSDC
+
+const tokensFor = (m) => {
+  if (m === "wrap") return ["tUSDY", "pUSDY"];
+  if (m === "unwrap") return ["pUSDY", "tUSDY"];
+  return sellP ? ["pUSDY", "tUSDC"] : ["tUSDC", "pUSDY"];
+};
+
 const setMode = (m) => {
   mode = m;
   $("tabWrap").classList.toggle("active", m === "wrap");
   $("tabUnwrap").classList.toggle("active", m === "unwrap");
-  $("inLabel").textContent = m === "wrap" ? "You deposit (tUSDY — tokenized T-bill)" : "You deposit (pUSDY)";
-  $("tokenIn").textContent = m === "wrap" ? "tUSDY" : "pUSDY";
-  $("tokenOut").textContent = m === "wrap" ? "pUSDY" : "tUSDY";
-  if (pubkey) $("actionBtn").textContent = m === "wrap" ? "Wrap tUSDY → pUSDY" : "Unwrap pUSDY → tUSDY";
+  $("tabSwap").classList.toggle("active", m === "swap");
+  const [tIn, tOut] = tokensFor(m);
+  $("inLabel").textContent = m === "wrap"
+    ? "You deposit (tUSDY — tokenized T-bill)"
+    : `You ${m === "swap" ? "sell" : "deposit"} (${tIn})`;
+  $("tokenIn").textContent = tIn;
+  $("tokenOut").textContent = tOut;
+  $("flipRow").style.display = m === "swap" ? "block" : "none";
+  $("feeLabel").textContent = m === "swap" ? "Fee (0.25% to LPs)" : "Fee (0.10%)";
+  $("backingRow").style.display = m === "swap" ? "none" : "flex";
+  $("poolRow").style.display = m === "swap" ? "flex" : "none";
+  if (pubkey) $("actionBtn").textContent =
+    m === "wrap" ? "Wrap tUSDY → pUSDY" :
+    m === "unwrap" ? "Unwrap pUSDY → tUSDY" : `Swap ${tIn} → ${tOut}`;
   renderBalances();
   recalc();
 };
 $("tabWrap").onclick = () => setMode("wrap");
 $("tabUnwrap").onclick = () => setMode("unwrap");
+$("tabSwap").onclick = () => { setMode("swap"); refreshPool(); };
+$("flipBtn").onclick = () => { sellP = !sellP; setMode("swap"); };
+
+// Pool reserves, so the demo can quote a swap before you sign it.
+let reserves = { p: 0, q: 0 };
+
+async function refreshPool() {
+  try {
+    const pool = new PublicKey(CONFIG.pool);
+    const [poolP, poolQ] = [
+      ata(pool, new PublicKey(CONFIG.pMint), TOKEN_2022),
+      ata(pool, new PublicKey(CONFIG.quoteMint), TOKEN_PROGRAM),
+    ];
+    const [p, q] = await Promise.all([
+      connection.getTokenAccountBalance(poolP).then(r => r.value.uiAmount ?? 0).catch(() => 0),
+      connection.getTokenAccountBalance(poolQ).then(r => r.value.uiAmount ?? 0).catch(() => 0),
+    ]);
+    reserves = { p, q };
+    $("poolLiquidity").textContent = `${fmt(p)} pUSDY / ${fmt(q)} tUSDC`;
+    if (mode === "swap") recalc();
+  } catch (e) { console.warn(e); }
+}
 
 // Trim trailing zeros so 499.500000 reads as 499.5.
 const fmt = (n) => {
@@ -367,8 +422,22 @@ const fmt = (n) => {
   return s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s;
 };
 
+// Constant product, matching the on-chain maths (fee taken off the input).
+const quoteSwap = (v) => {
+  const [rIn, rOut] = sellP ? [reserves.p, reserves.q] : [reserves.q, reserves.p];
+  if (!rIn || !rOut) return 0;
+  const inAfterFee = v * (10000 - CONFIG.swapFeeBps) / 10000;
+  return rOut * inAfterFee / (rIn + inAfterFee);
+};
+
 const recalc = () => {
   const v = parseFloat($("amountIn").value) || 0;
+  if (mode === "swap") {
+    const fee = v * CONFIG.swapFeeBps / 10000;
+    $("amountOut").value = v ? fmt(quoteSwap(v)) : "";
+    $("feeAmount").textContent = v ? fmt(fee) + " " + $("tokenIn").textContent : "—";
+    return;
+  }
   const fee = v * CONFIG.feeBps / 10000;
   $("amountOut").value = v ? fmt(v - fee) : "";
   $("feeAmount").textContent = v ? fmt(fee) + " " + $("tokenIn").textContent : "—";
@@ -376,7 +445,7 @@ const recalc = () => {
 $("amountIn").oninput = recalc;
 
 // Wallet balances for both sides, so you can see what you have and fill it in.
-let balances = { asset: 0, p: 0 };
+let balances = { asset: 0, p: 0, quote: 0 };
 
 async function refreshBalances() {
   if (!pubkey || !CONFIG.assetMint || !CONFIG.pMint) return;
@@ -387,34 +456,104 @@ async function refreshBalances() {
       return res.value.uiAmount ?? 0;
     } catch { return 0; } // no token account yet
   };
-  const [asset, p] = await Promise.all([
+  const [asset, p, quote] = await Promise.all([
     read(CONFIG.assetMint, TOKEN_PROGRAM),
     read(CONFIG.pMint, TOKEN_2022),
+    read(CONFIG.quoteMint, TOKEN_PROGRAM),
   ]);
-  balances = { asset, p };
+  balances = { asset, p, quote };
   renderBalances();
 }
 
+const balanceOf = (ticker) =>
+  ticker === "tUSDY" ? balances.asset : ticker === "pUSDY" ? balances.p : balances.quote;
+
 function renderBalances() {
-  const inBal = mode === "wrap" ? balances.asset : balances.p;
-  const outBal = mode === "wrap" ? balances.p : balances.asset;
+  const [tIn, tOut] = tokensFor(mode);
+  const inBal = balanceOf(tIn);
   $("balIn").textContent = pubkey ? fmt(inBal) : "—";
-  $("balOut").textContent = pubkey ? fmt(outBal) : "—";
+  $("balOut").textContent = pubkey ? fmt(balanceOf(tOut)) : "—";
   $("maxBtn").style.visibility = pubkey && inBal > 0 ? "visible" : "hidden";
 }
 
 $("maxBtn").onclick = () => {
-  const inBal = mode === "wrap" ? balances.asset : balances.p;
+  const inBal = balanceOf(tokensFor(mode)[0]);
   if (!inBal) return;
   $("amountIn").value = fmt(inBal);
   recalc();
 };
+
+async function doSwap(v) {
+  const amountIn = Math.round(v * 10 ** CONFIG.decimals);
+  const expected = quoteSwap(v);
+  // 1% slippage tolerance — reserves can move between quoting and signing.
+  const minOut = Math.max(1, Math.floor(expected * 0.99 * 10 ** CONFIG.decimals));
+
+  const pMint = new PublicKey(CONFIG.pMint);
+  const quoteMint = new PublicKey(CONFIG.quoteMint);
+  const pool = new PublicKey(CONFIG.pool);
+  const identityProgram = new PublicKey(CONFIG.identityProgram);
+  const enc = new TextEncoder();
+
+  // The hook checks the credential of whoever *receives* the pToken.
+  const destOwner = sellP ? pool : pubkey;
+  const [credential] = PublicKey.findProgramAddressSync(
+    [enc.encode("credential"), destOwner.toBuffer()], identityProgram);
+
+  const data = new Uint8Array(8 + 8 + 8 + 1);
+  data.set(DISC.swap, 0);
+  data.set(u64le(amountIn), 8);
+  data.set(u64le(minOut), 16);
+  data[24] = sellP ? 1 : 0;
+
+  const ix = new TransactionInstruction({
+    programId: new PublicKey(CONFIG.poolProgram),
+    keys: [
+      { pubkey: pool, isSigner: false, isWritable: true },
+      { pubkey: pMint, isSigner: false, isWritable: true },
+      { pubkey: quoteMint, isSigner: false, isWritable: false },
+      { pubkey: ata(pool, pMint, TOKEN_2022), isSigner: false, isWritable: true },
+      { pubkey: ata(pool, quoteMint, TOKEN_PROGRAM), isSigner: false, isWritable: true },
+      { pubkey: ata(pubkey, pMint, TOKEN_2022), isSigner: false, isWritable: true },
+      { pubkey: ata(pubkey, quoteMint, TOKEN_PROGRAM), isSigner: false, isWritable: true },
+      { pubkey: pubkey, isSigner: true, isWritable: true },
+      { pubkey: TOKEN_2022, isSigner: false, isWritable: false },
+      { pubkey: TOKEN_PROGRAM, isSigner: false, isWritable: false },
+      { pubkey: new PublicKey(CONFIG.hookProgram), isSigner: false, isWritable: false },
+      { pubkey: new PublicKey(CONFIG.metaList), isSigner: false, isWritable: false },
+      { pubkey: identityProgram, isSigner: false, isWritable: false },
+      { pubkey: credential, isSigner: false, isWritable: false },
+    ],
+    data,
+  });
+
+  const tx = new Transaction().add(
+    ComputeBudgetProgram.setComputeUnitLimit({ units: 400_000 }),
+    createAtaIdempotentIx(pubkey, pubkey, pMint, TOKEN_2022),
+    createAtaIdempotentIx(pubkey, pubkey, quoteMint, TOKEN_PROGRAM),
+    ix,
+  );
+  tx.feePayer = pubkey;
+  tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+  const signed = await provider.signTransaction(tx);
+  const sig = await connection.sendRawTransaction(signed.serialize());
+  log(`swap sent: <a href="https://explorer.solana.com/tx/${sig}?cluster=devnet" target="_blank" style="color:var(--accent)">${sig.slice(0, 16)}…</a>`);
+  await connection.confirmTransaction(sig, "confirmed");
+  log("swap confirmed ✔");
+  await refreshPool();
+  await refreshBalances();
+}
 
 $("actionBtn").onclick = async () => {
   const v = parseFloat($("amountIn").value) || 0;
   if (!v) { log("Enter an amount."); return; }
   if (!CONFIG.assetMint || !CONFIG.pMint) {
     log("CONFIG.assetMint/pMint not set yet (run scripts/setup-devnet.ts).");
+    return;
+  }
+  if (mode === "swap") {
+    try { await doSwap(v); }
+    catch (e) { log("Error: " + (e.message ?? e)); }
     return;
   }
   try {
@@ -457,6 +596,7 @@ $("actionBtn").onclick = async () => {
     log(`${mode} confirmed ✔`);
     await refreshStats();
     await refreshBalances();
+    await refreshPool();
   } catch (e) {
     log("Error: " + (e.message ?? e));
   }

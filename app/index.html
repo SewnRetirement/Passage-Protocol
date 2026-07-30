@@ -55,6 +55,15 @@
   .hero h1 span, .logo span { text-shadow: 0 0 18px rgba(0,255,163,.6); }
   .stat .value { color: var(--accent); }
   .tab.active { color: #04150d; }
+  /* Keep the ticker fully visible — on narrow screens it used to get clipped. */
+  .amount-row input { min-width: 0; }
+  .amount-row .token { flex: 0 0 auto; white-space: nowrap; }
+  .field-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .field-head label { margin-bottom: 0; }
+  .bal { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .maxbtn { background: none; border: none; color: var(--accent); font-size: 12px; font-weight: 700;
+            cursor: pointer; padding: 0 0 0 8px; font-family: inherit; }
+  .maxbtn:hover { text-decoration: underline; }
   .btn.secondary { color: var(--text); }
   .btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
   .iconlink { display:inline-flex; align-items:center; color: var(--muted); transition: color .15s, transform .15s; }
@@ -98,16 +107,22 @@
       <div class="tab" id="tabUnwrap">Unwrap</div>
     </div>
     <div class="field">
-      <label id="inLabel">You deposit (tUSDY — tokenized T-bill)</label>
+      <div class="field-head">
+        <label id="inLabel">You deposit (tUSDY — tokenized T-bill)</label>
+        <span class="bal">Balance: <span id="balIn">—</span><button type="button" class="maxbtn" id="maxBtn" style="visibility:hidden">Max</button></span>
+      </div>
       <div class="amount-row">
         <input type="number" id="amountIn" placeholder="0.00" min="0">
         <div class="token" id="tokenIn">tUSDY</div>
       </div>
     </div>
     <div class="field">
-      <label id="outLabel">You receive</label>
+      <div class="field-head">
+        <label id="outLabel">You receive</label>
+        <span class="bal">Balance: <span id="balOut">—</span></span>
+      </div>
       <div class="amount-row">
-        <input type="number" id="amountOut" placeholder="0.00" disabled>
+        <input type="text" id="amountOut" placeholder="0.00" readonly>
         <div class="token" id="tokenOut">pUSDY</div>
       </div>
     </div>
@@ -224,6 +239,7 @@ $("connectBtn").onclick = async () => {
     log(`Wallet connected: ${pubkey.toBase58()}`);
     await checkKyc();
     await refreshStats();
+    await refreshBalances();
   } catch { log("Connection cancelled."); }
 };
 
@@ -289,6 +305,7 @@ $("faucetBtn").onclick = async () => {
     log("Verified, and 1,000 test tUSDY are in your wallet. You can wrap now.");
     await checkKyc();
     await refreshStats();
+    await refreshBalances();
   } catch (e) {
     const msg = String(e?.message || e);
     if (/User rejected|cancelled/i.test(msg)) log("Request cancelled.");
@@ -337,18 +354,61 @@ const setMode = (m) => {
   $("tokenIn").textContent = m === "wrap" ? "tUSDY" : "pUSDY";
   $("tokenOut").textContent = m === "wrap" ? "pUSDY" : "tUSDY";
   if (pubkey) $("actionBtn").textContent = m === "wrap" ? "Wrap tUSDY → pUSDY" : "Unwrap pUSDY → tUSDY";
+  renderBalances();
   recalc();
 };
 $("tabWrap").onclick = () => setMode("wrap");
 $("tabUnwrap").onclick = () => setMode("unwrap");
 
+// Trim trailing zeros so 499.500000 reads as 499.5.
+const fmt = (n) => {
+  if (!isFinite(n)) return "0";
+  const s = n.toFixed(CONFIG.decimals);
+  return s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s;
+};
+
 const recalc = () => {
   const v = parseFloat($("amountIn").value) || 0;
   const fee = v * CONFIG.feeBps / 10000;
-  $("amountOut").value = v ? (v - fee).toFixed(6) : "";
-  $("feeAmount").textContent = v ? fee.toFixed(6) + " " + $("tokenIn").textContent : "—";
+  $("amountOut").value = v ? fmt(v - fee) : "";
+  $("feeAmount").textContent = v ? fmt(fee) + " " + $("tokenIn").textContent : "—";
 };
 $("amountIn").oninput = recalc;
+
+// Wallet balances for both sides, so you can see what you have and fill it in.
+let balances = { asset: 0, p: 0 };
+
+async function refreshBalances() {
+  if (!pubkey || !CONFIG.assetMint || !CONFIG.pMint) return;
+  const read = async (mint, tokenProgram) => {
+    try {
+      const res = await connection.getTokenAccountBalance(
+        ata(pubkey, new PublicKey(mint), tokenProgram));
+      return res.value.uiAmount ?? 0;
+    } catch { return 0; } // no token account yet
+  };
+  const [asset, p] = await Promise.all([
+    read(CONFIG.assetMint, TOKEN_PROGRAM),
+    read(CONFIG.pMint, TOKEN_2022),
+  ]);
+  balances = { asset, p };
+  renderBalances();
+}
+
+function renderBalances() {
+  const inBal = mode === "wrap" ? balances.asset : balances.p;
+  const outBal = mode === "wrap" ? balances.p : balances.asset;
+  $("balIn").textContent = pubkey ? fmt(inBal) : "—";
+  $("balOut").textContent = pubkey ? fmt(outBal) : "—";
+  $("maxBtn").style.visibility = pubkey && inBal > 0 ? "visible" : "hidden";
+}
+
+$("maxBtn").onclick = () => {
+  const inBal = mode === "wrap" ? balances.asset : balances.p;
+  if (!inBal) return;
+  $("amountIn").value = fmt(inBal);
+  recalc();
+};
 
 $("actionBtn").onclick = async () => {
   const v = parseFloat($("amountIn").value) || 0;
@@ -396,6 +456,7 @@ $("actionBtn").onclick = async () => {
     await connection.confirmTransaction(sig, "confirmed");
     log(`${mode} confirmed ✔`);
     await refreshStats();
+    await refreshBalances();
   } catch (e) {
     log("Error: " + (e.message ?? e));
   }

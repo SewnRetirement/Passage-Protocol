@@ -99,7 +99,7 @@ other decision.
 
 ## 4. The raise
 
-- **Minimum:** $1.8M (18 months of runway: 2 devs, 2 advisors, audit ~$40k, legal ~$60k, KYC integration, listings)
+- **Minimum:** $1.8M (18 months of runway: 2 devs, 2 advisors, audit ~$40k, legal/regulatory ~$60k, KYC integration, listings)
 - **Cap: $4M.** If commitments exceed the cap, allocations are pro-rata and the excess is refunded in USDC at TGE (MetaDAO standard)
 - 10M $PASS, high float, no hidden allocations
 
@@ -108,7 +108,7 @@ other decision.
 | Component | Size | Condition |
 |---|---|---|
 | Founder salary | $16k/month | monthly budget, from day 1 |
-| Advisors (2x, part-time) | $5k/month each | named roles: legal/regulatory (MiCA) and RWA/issuer relations — part of the pre-approved operating budget |
+| Advisors (2x, part-time) | $5k/month each | named roles: legal/regulatory (MiCA + securities law) and RWA/issuer relations — part of the pre-approved operating budget |
 | Milestone bonus 1 | 5% of the raise | mainnet live + first RWA asset wrapped |
 | Milestone bonus 2 | 5% of the raise | $5M Total Value Wrapped |
 | Milestone bonus 3 | 7.5% of the raise | $25M Total Value Wrapped |
@@ -136,7 +136,7 @@ here, participants know exactly what the team earns and when.
 | Contingency | $2k |
 | **Total** | **~$50k/month** |
 
-One-time costs: audit $40k · legal/MiCA structuring $60k · entity setup $15k ·
+One-time costs: audit $40k · legal structuring, MiCA + securities $60k · entity setup $15k ·
 listings & integrations $30k · bug bounty program $20k · founder KYC attestation $5k ≈ **$170k**.
 
 Math: 18 months x $50k + $170k ≈ **$1.07M**. Of the $1.8M minimum raise, 20%
@@ -155,8 +155,25 @@ budget requires a futarchy proposal.
 
 ## 8. Risks (transparent)
 
-1. **Regulatory:** wrapped securities remain securities; the legal structure (MiCA)
-   is reviewed before mainnet — budget reserved.
+1. **Regulatory — the one that decides whether this works.** Two separate regimes
+   apply and they are often confused. $PASS is a governance token and sits under
+   **MiCA**. The wrapped assets are securities, and wrapping does not change that:
+   they sit under **MiFID II and the prospectus rules**, which MiCA explicitly
+   excludes. The second is the heavier of the two.
+
+   The structural answer is that **Passage is a technology provider, not a
+   regulated financial institution.** The issuer holds the licence, issues the
+   asset, and remains the regulated party; Passage licenses the compliance layer
+   to them and is paid by them. That keeps the vault and the venue in the hands of
+   parties already authorised to hold and trade securities, and it is why §3 says
+   our customer is the issuer rather than the trader.
+
+   This is a design decision, not a disclaimer: it determines who deploys the
+   vault, who operates the pool, and where the entity sits. Getting it wrong means
+   needing an investment-firm licence — minimum capital, a compliance function and
+   ongoing supervision — which a $1.8M raise cannot carry. The $60k legal budget
+   buys an opinion on staying out of scope, not a licence application. Counsel is
+   the first advisor hired, before mainnet, for exactly this reason.
 2. **Issuer cooperation:** no issuers, no assets; conversations start before the ICO.
 3. **Smart-contract risk:** audit required before mainnet; transfer hooks are new territory.
 4. **Competition:** large issuers could build this themselves; our edge is neutrality
@@ -190,7 +207,7 @@ and a public demo anyone can use without asking permission.
 | Role | When | Why |
 |---|---|---|
 | Second Solana developer | month 1 | Removes the single point of failure before mainnet |
-| Advisor — legal / regulatory (MiCA) | month 1 | Wrapped securities stay securities; the structure has to be right before mainnet |
+| Advisor — legal / regulatory (MiCA + securities law) | month 1 | Wrapped securities stay securities; the structure has to be right before mainnet |
 | Advisor — RWA / issuer relations | month 1 | The whole business depends on issuers saying yes; that needs someone with the relationships |
 
 Both advisor seats are part-time at $5k/month and are budgeted in §6. They are

@@ -55,6 +55,8 @@
   .hero h1 span, .logo span { text-shadow: 0 0 18px rgba(0,255,163,.6); }
   .stat .value { color: var(--accent); }
   .tab.active { color: #04150d; }
+  .btn.secondary { color: var(--text); }
+  .btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
   .iconlink { display:inline-flex; align-items:center; color: var(--muted); transition: color .15s, transform .15s; }
   .iconlink:hover { color: var(--accent); transform: translateY(-1px); }
   footer a { color: var(--muted); text-decoration: none; }
@@ -112,6 +114,11 @@
     <div class="info-row"><span>Fee (0.10%)</span><span class="v" id="feeAmount">—</span></div>
     <div class="info-row"><span>Backing</span><span class="v">1:1 in an on-chain vault</span></div>
     <button class="btn green" style="width:100%; margin-top:14px;" id="actionBtn" disabled>Connect your wallet first</button>
+    <button class="btn secondary" style="width:100%; margin-top:10px;" id="faucetBtn">Get test tokens</button>
+    <p style="color:var(--muted); font-size:12px; text-align:center; margin-top:10px;">
+      Devnet demo: the faucet verifies your wallet and sends test tUSDY so you can try it.
+      On mainnet, credentials come from a KYC provider — not from a faucet.
+    </p>
   </div>
 
   <div class="card">
@@ -154,6 +161,7 @@ const CONFIG = {
   hookProgram: "2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf",
   assetMint: "B6Z7EVH1SonTGCWKzH4a69Lw1MehGjUuUSR4iNXFfJMz",   // tUSDY devnet mint
   pMint: "82Gacf3dnd6CRTcnzvKk37o9r1JzCzR6krJt7y2jaSgW",       // pUSDY devnet mint
+  faucetProgram: "7e2xLqS525PMSrr1Wx6zqamcHCUvsaS3bGCZVmPA49XR",
   decimals: 6,
   feeBps: 10,
 };
@@ -162,7 +170,11 @@ const CONFIG = {
 const TOKEN_PROGRAM = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 const TOKEN_2022 = new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
 const ATA_PROGRAM = new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
-const DISC = { wrap: [178,40,10,189,228,129,186,140], unwrap: [126,175,198,14,212,69,50,44] };
+const DISC = {
+  wrap: [178,40,10,189,228,129,186,140],
+  unwrap: [126,175,198,14,212,69,50,44],
+  claim: [62,198,214,193,213,159,108,210],
+};
 
 const connection = new Connection(CONFIG.cluster, "confirmed");
 let provider = null, pubkey = null, mode = "wrap";
@@ -213,6 +225,69 @@ $("connectBtn").onclick = async () => {
     await checkKyc();
     await refreshStats();
   } catch { log("Connection cancelled."); }
+};
+
+// Devnet convenience: verify the caller and hand them test tUSDY in one go, so
+// anyone can actually try the protocol instead of just looking at the UI.
+$("faucetBtn").onclick = async () => {
+  if (!pubkey) { log("Connect a wallet first."); return; }
+  const btn = $("faucetBtn");
+  btn.disabled = true;
+  btn.textContent = "Requesting…";
+  try {
+    const faucetProgram = new PublicKey(CONFIG.faucetProgram);
+    const identityProgram = new PublicKey(CONFIG.identityProgram);
+    const assetMint = new PublicKey(CONFIG.assetMint);
+    const enc = new TextEncoder();
+
+    const [faucet] = PublicKey.findProgramAddressSync([enc.encode("faucet")], faucetProgram);
+    const [faucetSigner] = PublicKey.findProgramAddressSync(
+      [enc.encode("faucet-signer")], faucetProgram);
+    const [identityConfig] = PublicKey.findProgramAddressSync(
+      [enc.encode("config")], identityProgram);
+    const [credential] = PublicKey.findProgramAddressSync(
+      [enc.encode("credential"), pubkey.toBuffer()], identityProgram);
+    const userAsset = ata(pubkey, assetMint, TOKEN_PROGRAM);
+
+    const ix = new TransactionInstruction({
+      programId: faucetProgram,
+      keys: [
+        { pubkey: faucet, isSigner: false, isWritable: false },
+        { pubkey: faucetSigner, isSigner: false, isWritable: true },
+        { pubkey: identityConfig, isSigner: false, isWritable: true },
+        { pubkey: credential, isSigner: false, isWritable: true },
+        { pubkey: identityProgram, isSigner: false, isWritable: false },
+        { pubkey: assetMint, isSigner: false, isWritable: true },
+        { pubkey: userAsset, isSigner: false, isWritable: true },
+        { pubkey: pubkey, isSigner: true, isWritable: true },
+        { pubkey: TOKEN_PROGRAM, isSigner: false, isWritable: false },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ],
+      data: new Uint8Array(DISC.claim),
+    });
+
+    const tx = new Transaction().add(
+      createAtaIdempotentIx(pubkey, pubkey, assetMint, TOKEN_PROGRAM),
+      ix,
+    );
+    tx.feePayer = pubkey;
+    tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+    const signed = await provider.signTransaction(tx);
+    const sig = await connection.sendRawTransaction(signed.serialize());
+    log(`Faucet: <a href="https://explorer.solana.com/tx/${sig}?cluster=devnet" target="_blank" style="color:var(--accent)">${sig.slice(0, 16)}…</a>`);
+    await connection.confirmTransaction(sig, "confirmed");
+    log("Verified, and 1,000 test tUSDY are in your wallet. You can wrap now.");
+    await checkKyc();
+    await refreshStats();
+  } catch (e) {
+    const msg = String(e?.message || e);
+    if (/User rejected|cancelled/i.test(msg)) log("Request cancelled.");
+    else if (/insufficient|0x1/i.test(msg)) log("Faucet request failed — you may need a little devnet SOL for fees.");
+    else log("Faucet request failed: " + msg);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Get test tokens";
+  }
 };
 
 async function checkKyc() {

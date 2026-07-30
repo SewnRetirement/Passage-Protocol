@@ -1,0 +1,22 @@
+[package]
+name = "passage_demo_faucet"
+version = "0.1.0"
+description = "Passage Protocol devnet demo faucet: hands out test tUSDY and a Passage credential"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "passage_demo_faucet"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = "0.31.1"
+anchor-spl = "0.31.1"
+passage_identity = { path = "../passage_identity", features = ["cpi"] }

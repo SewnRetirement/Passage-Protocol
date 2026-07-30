@@ -4,6 +4,7 @@ members = [
     "programs/passage_hook",
     "programs/passage_wrapper",
     "programs/passage_pool",
+    "programs/passage_demo_faucet",
 ]
 resolver = "2"
 
@@ -11,6 +12,9 @@ resolver = "2"
 overflow-checks = true
 lto = "fat"
 codegen-units = 1
+opt-level = "z"
+strip = true
+panic = "abort"
 
 [profile.release.build-override]
 opt-level = 3

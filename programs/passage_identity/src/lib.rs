@@ -38,6 +38,17 @@ pub mod passage_identity {
         emit!(WalletRevoked { wallet });
         Ok(())
     }
+
+    /// Hand the registry over to a new authority (current authority only).
+    /// Lets control move to a KYC issuer, a multisig, or the futarchy treasury
+    /// without redeploying the program.
+    pub fn set_authority(ctx: Context<SetAuthority>, new_authority: Pubkey) -> Result<()> {
+        let config = &mut ctx.accounts.config;
+        let previous = config.authority;
+        config.authority = new_authority;
+        emit!(AuthorityChanged { previous, current: new_authority });
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -89,6 +100,13 @@ pub struct RevokeWallet<'info> {
     pub authority: Signer<'info>,
 }
 
+#[derive(Accounts)]
+pub struct SetAuthority<'info> {
+    #[account(mut, seeds = [CONFIG_SEED], bump = config.bump, has_one = authority)]
+    pub config: Account<'info, Config>,
+    pub authority: Signer<'info>,
+}
+
 #[account]
 #[derive(InitSpace)]
 pub struct Config {
@@ -112,4 +130,10 @@ pub struct WalletVerified {
 #[event]
 pub struct WalletRevoked {
     pub wallet: Pubkey,
+}
+
+#[event]
+pub struct AuthorityChanged {
+    pub previous: Pubkey,
+    pub current: Pubkey,
 }

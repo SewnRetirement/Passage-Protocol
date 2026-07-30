@@ -1021,6 +1021,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "passage_demo_faucet"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "passage_identity",
+]
+
+[[package]]
 name = "passage_hook"
 version = "0.1.0"
 dependencies = [

@@ -20,6 +20,7 @@ solves this by putting compliance **inside the token itself**:
 | `passage_identity` | `8ueu...Gpup` | Registry: verify/revoke wallet credentials (PDA per wallet) |
 | `passage_hook` | `2t8m...13Nf` | Token-2022 transfer hook: blocks transfers to unverified wallets |
 | `passage_pool` | `2Sj6...33aJ` | Gated constant-product AMM: pToken/USDC swaps between verified wallets |
+| `passage_demo_faucet` | `7e2x...49XR` | **Devnet only.** Hands demo visitors a credential and test tUSDY |
 
 Flow of a pToken transfer:
 
@@ -37,7 +38,7 @@ user → Token-2022 transfer_checked
 # requirements: rust, solana cli (agave 2.1.x), anchor 0.31.1, node 22
 npm install
 anchor build
-anchor test        # starts a local validator, runs all 14 tests
+anchor test        # starts a local validator, runs all 21 tests
 ```
 
 ## Tests
@@ -52,15 +53,38 @@ anchor test        # starts a local validator, runs all 14 tests
 - transfer to an unverified wallet → **fails** (blocked by the hook)
 - unwrap + collect_fees to the treasury
 
+`tests/pool.ts` covers gated swaps and liquidity in the AMM.
+`tests/faucet.ts` covers the devnet faucet: a fresh wallet claims, gets verified,
+and can then wrap — and an oversized or non-admin drip change is rejected.
+
 ## Frontend
 
 `app/index.html` — standalone demo UI (wrap/unwrap, wallet connect, KYC badge).
-After the devnet deploy: fill in `CONFIG.assetMint` / `CONFIG.pMint`.
-Live demo: GitHub Pages serves `docs/index.html`.
+Live demo: GitHub Pages serves `docs/index.html`, wired to the devnet deployment.
+
+On mobile, wallets are not injected into the browser, so "Connect wallet" hands
+off to Phantom's in-app browser via a deeplink.
+
+### The devnet faucet, and what it does not mean
+
+The demo has a **Get test tokens** button. It issues the caller a Passage
+credential and mints them test tUSDY, so anyone can try a real wrap instead of
+just looking at the UI. To make that work on devnet, the registry authority and
+the test-mint authority are held by a PDA of `passage_demo_faucet`.
+
+That is a devnet convenience, not the compliance model. On mainnet the registry
+authority belongs to a KYC provider (or a multisig / the futarchy treasury), and
+credentials are issued only after real verification — `passage_identity` has a
+`set_authority` instruction precisely so that control can move without a
+redeploy. The faucet program is not part of a mainnet deployment.
+
+The enforcement path is identical either way: the transfer hook checks for a
+credential PDA and fails the transfer if there isn't one. Only the question of
+*who may issue credentials* differs.
 
 ## Roadmap
 
-- [ ] Devnet deploy + live tx flow in the frontend
+- [x] Devnet deploy + live tx flow in the frontend (all 4 core programs live)
 - [ ] KYC provider integration (Civic/Sumsub) → automated credential issuance
 - [ ] zk-credentials instead of plain PDAs (privacy)
 - [x] AMM pool pToken/USDC (`passage_pool`) — gated swaps, LP tokens, 14/14 tests

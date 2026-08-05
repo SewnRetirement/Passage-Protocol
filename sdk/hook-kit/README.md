@@ -1,4 +1,4 @@
-# @passage/hook-kit
+# @passage_protocol/hook-kit
 
 Resolve Token-2022 transfer-hook accounts — including the CPI case the SPL
 library does not cover.
@@ -48,7 +48,7 @@ Your Rust program calls `spl_token_2022::onchain::invoke_transfer_checked` and
 forwards `remaining_accounts`. Off-chain, build them like this:
 
 ```ts
-import { hookAccountsForCpi } from '@passage/hook-kit';
+import { hookAccountsForCpi } from '@passage_protocol/hook-kit';
 
 const remaining = await hookAccountsForCpi(connection, {
   mint: pMint,
@@ -71,7 +71,7 @@ no hook — so the call is safe whether or not hooks are involved.
 ## A plain transfer
 
 ```ts
-import { appendHookAccounts } from '@passage/hook-kit';
+import { appendHookAccounts } from '@passage_protocol/hook-kit';
 
 // instruction already has source, mint, destination, owner
 await appendHookAccounts(connection, instruction, {
@@ -85,7 +85,7 @@ metaList]`. Mutates and returns the instruction.
 ## Branching before you build
 
 ```ts
-import { hasTransferHook, getHookProgramId } from '@passage/hook-kit';
+import { hasTransferHook, getHookProgramId } from '@passage_protocol/hook-kit';
 
 if (await hasTransferHook(connection, mint)) {
   // this token has rules attached
@@ -108,7 +108,7 @@ The SPL library reports this as a bare "account data not found". This package
 throws a `HookResolutionError` that says which account is missing and why:
 
 ```ts
-import { HookResolutionError } from '@passage/hook-kit';
+import { HookResolutionError } from '@passage_protocol/hook-kit';
 
 try {
   await hookAccountsForCpi(connection, ctx);

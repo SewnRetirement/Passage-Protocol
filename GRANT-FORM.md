@@ -62,7 +62,7 @@ the few working, tested, public examples of an AMM trading a transfer-hooked
 Token-2022 mint — including the non-obvious detail that the pool's own PDA must
 satisfy the hook.
 
-Before applying we extracted the client-side half into @passage/hook-kit, an
+Before applying we extracted the client-side half into @passage_protocol/hook-kit, an
 MIT-licensed SDK that resolves hook accounts for any hooked mint, not just ours.
 It covers the case @solana/spl-token does not: when your own program performs the
 transfer by CPI and needs those accounts as remaining_accounts. Every AMM, vault
@@ -93,7 +93,7 @@ and "usable in Solana DeFi" is the gap this closes.
 
 ## Budget and milestones
 
-Milestone 1 — @passage/hook-kit SDK — $10,000
+Milestone 1 — @passage_protocol/hook-kit SDK — $10,000
 Core already built and verified, unfunded. Remaining: publish to npm, stabilise
 the API, prove it against hooks we did not write.
 Complete when: on npm under MIT, working against at least two third-party hooks.

@@ -1,12 +1,16 @@
 {
-  "name": "@passage/hook-kit",
+  "name": "@passage_protocol/hook-kit",
   "version": "0.1.0",
-  "description": "Resolve Token-2022 transfer-hook accounts — including the CPI case the SPL library does not cover",
+  "description": "Resolve Token-2022 transfer-hook accounts \u2014 including the CPI case the SPL library does not cover",
   "license": "MIT",
   "type": "commonjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "solana",
     "token-2022",
@@ -29,5 +33,8 @@
   },
   "devDependencies": {
     "typescript": "^5.4.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

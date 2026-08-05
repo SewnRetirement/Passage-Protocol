@@ -89,7 +89,7 @@ gap this closes.
 All four milestones produce open-source, MIT-licensed output that is useful
 independently of Passage's business.
 
-**Milestone 1 — `@passage/hook-kit` TypeScript SDK · $10,000**
+**Milestone 1 — `@passage_protocol/hook-kit` TypeScript SDK · $10,000**
 The core is already built and verified, unfunded (see §5a). Remaining: publish to
 npm, stabilise the API, and test against transfer hooks other than our own.
 *Complete when:* on npm under MIT, working against at least two third-party hooks.
@@ -121,7 +121,7 @@ pattern is a bug in every token that adopts it.
 Milestone 1 is largely done and it was done unfunded, so this application can be
 judged on delivered work rather than intent.
 
-**`@passage/hook-kit`** ([`sdk/hook-kit`](https://github.com/SewnRetirement/passage-protocol/tree/main/sdk/hook-kit))
+**`@passage_protocol/hook-kit`** ([`sdk/hook-kit`](https://github.com/SewnRetirement/passage-protocol/tree/main/sdk/hook-kit))
 resolves transfer-hook accounts for any hooked Token-2022 mint — and covers the
 case `@solana/spl-token` does not: when *your own program* performs the transfer
 by CPI and needs those accounts as `remaining_accounts`. Every AMM, vault and

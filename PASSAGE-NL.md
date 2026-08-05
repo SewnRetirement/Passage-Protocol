@@ -127,9 +127,12 @@ Hier ben ik het zwakst, en ik zeg dat liever hardop.
 
 Er staat een X-account met een handvol volgers. De inhoud is goed — de thread werd
 uitgelezen tot de laatste post, en er komen echte reacties van serieuze accounts.
-Maar ik heb een fout gemaakt: te veel replies per dag vanaf een jong account, en X
-gaf een spam-label. Bezwaar toegewezen, label weg, maar de les staat: dit moet
-langzaam en menselijk, niet als campagne.
+Eén ding is het vermelden waard: X heeft het account kort een spam-label gegeven na
+een reeks inhoudelijke replies vanaf een jong account. Bezwaar ingediend, toegewezen,
+label eraf — het was onterecht. Wel hebben we het tempo daarna teruggebracht naar
+een paar replies per dag. Niet als boetedoening, maar omdat de weging slecht is: een
+paar replies extra leveren weinig op, en je account kwijtraken vlak voor een launch
+kost alles.
 
 Verder is er nog geen Discord of Telegram, bewust — een leeg kanaal doet meer kwaad
 dan geen kanaal. En er is nog geen aanwezigheid in de MetaDAO-community, terwijl

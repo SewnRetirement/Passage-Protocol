@@ -90,9 +90,9 @@ All four milestones produce open-source, MIT-licensed output that is useful
 independently of Passage's business.
 
 **Milestone 1 — `@passage_protocol/hook-kit` TypeScript SDK · $10,000**
-The core is already built and verified, unfunded (see §5a). Remaining: publish to
-npm, stabilise the API, and test against transfer hooks other than our own.
-*Complete when:* on npm under MIT, working against at least two third-party hooks.
+The core is already built and verified, unfunded (see §5a). Published to npm as `@passage_protocol/hook-kit` under MIT. Remaining: stabilise
+the API and test against transfer hooks other than our own.
+*Complete when:* working against at least two third-party hooks.
 
 **Milestone 2 — Reference implementation guide · $20,000**
 A written walkthrough of building a transfer hook and consuming one from another
@@ -136,9 +136,9 @@ itself a recipient that must satisfy the hook. Both are undocumented today.
 Eleven checks pass against the live devnet deployment, asserting that the
 accounts it resolves are exactly the ones our working AMM passes by hand.
 
-The remaining $10,000 on milestone 1 is for the part that makes it a public good
-rather than our internal tool: publishing to npm, stabilising the API, and
-proving it against hooks we did not write.
+It is published on npm as `@passage_protocol/hook-kit`, MIT, installable today.
+The remaining $10,000 on milestone 1 is for stabilising the API and proving it
+against hooks we did not write.
 
 ## 6. How this relates to the MetaDAO raise
 

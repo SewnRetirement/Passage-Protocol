@@ -94,9 +94,10 @@ and "usable in Solana DeFi" is the gap this closes.
 ## Budget and milestones
 
 Milestone 1 — @passage_protocol/hook-kit SDK — $10,000
-Core already built and verified, unfunded. Remaining: publish to npm, stabilise
-the API, prove it against hooks we did not write.
-Complete when: on npm under MIT, working against at least two third-party hooks.
+Core built, verified and already published to npm as @passage_protocol/hook-kit
+under MIT — all unfunded. Remaining: stabilise the API and prove it against hooks
+we did not write.
+Complete when: working against at least two third-party hooks.
 
 Milestone 2 — Reference implementation guide — $20,000
 Building a transfer hook and consuming one from another program, covering the

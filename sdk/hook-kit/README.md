@@ -27,19 +27,8 @@ That gap is what this package fills.
 
 ## Install
 
-Not on npm yet — publishing is tracked as milestone 1 of our Solana Foundation
-grant application. Until then, install from the repo:
-
 ```bash
-npm install github:SewnRetirement/passage-protocol#main --prefix sdk/hook-kit
-# or vendor sdk/hook-kit/src/index.ts directly — it is one file with no
-# dependencies beyond @solana/web3.js and @solana/spl-token
-```
-
-You also need the peers:
-
-```bash
-npm install @solana/spl-token @solana/web3.js
+npm install @passage_protocol/hook-kit @solana/spl-token @solana/web3.js
 ```
 
 ## Your program does the transfer (the CPI case)

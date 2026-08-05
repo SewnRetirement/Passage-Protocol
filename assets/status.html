@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    background: #060B09; color: #EAFFF6;
+    font-family: 'Segoe UI', 'DejaVu Sans', sans-serif;
+    padding: 9mm 11mm; font-size: 8.4pt; line-height: 1.35;
+  }
+  .neon { color: #00FFA3; }
+  .muted { color: #7DA395; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4mm; }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 20pt; font-weight: 800; letter-spacing: -1px; }
+  .tag { font-size: 8pt; letter-spacing: 2.5px; color: #00FFA3; text-align: right; }
+  h1 { font-size: 15pt; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2mm; }
+  .lead { color: #7DA395; font-size: 8.6pt; margin-bottom: 3mm; }
+  .stats { display: flex; gap: 3.5mm; margin-bottom: 3.5mm; }
+  .stat { flex: 1; background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 2.4mm; text-align: center; }
+  .stat b { display: block; font-size: 13pt; color: #00FFA3; }
+  .stat span { font-size: 7.3pt; color: #7DA395; }
+  .cols { display: flex; gap: 5mm; }
+  .col { flex: 1; }
+  h2 { font-size: 9pt; font-weight: 700; color: #00FFA3; margin: 3mm 0 1.2mm; text-transform: uppercase; letter-spacing: 1px; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 8.2pt; font-weight: 700; color: #EAFFF6; margin: 2.4mm 0 1mm; }
+  ul { list-style: none; }
+  li { margin-bottom: 1.1mm; padding-left: 4.2mm; position: relative; }
+  li::before { content: "✓"; position: absolute; left: 0; color: #00FFA3; font-weight: 700; }
+  ul.todo li::before { content: "○"; color: #7DA395; font-weight: 400; }
+  .box { background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 2.4mm 3mm; margin-top: 1.8mm; font-size: 7.7pt; }
+  .flow { font-size: 8.3pt; background: #0C1410; border: 1px solid #1C3229; border-radius: 3mm; padding: 2.5mm 3mm; margin-bottom: 3mm; text-align: center; }
+  footer { position: absolute; bottom: 8mm; left: 11mm; right: 11mm; display: flex; justify-content: space-between; font-size: 7.3pt; color: #7DA395; border-top: 1px solid #1C3229; padding-top: 2mm; }
+  .gate { color: #7DA395; font-size: 7.4pt; font-style: italic; margin-top: 0.8mm; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <svg width="34" height="34" viewBox="0 0 1024 1024"><path d="M 352 736 L 352 468 A 160 160 0 0 1 672 468 L 672 736" stroke="#00FFA3" stroke-width="60" stroke-linecap="round" fill="none"/><path d="M 190 585 C 340 585, 400 545, 512 545 C 624 545, 684 585, 834 585" stroke="#00E5FF" stroke-width="34" stroke-linecap="round" fill="none" opacity="0.85"/></svg>
+      passage<span class="neon">.</span>
+    </div>
+    <div class="tag">SOLANA · TOKEN-2022 · RWA<br><span class="muted">Build status · August 2026</span></div>
+  </header>
+
+  <h1>Where Passage stands <span class="neon">today</span></h1>
+  <p class="lead">Everything below the line marked "shipped" is verifiable right now — on devnet,
+  on npm, or in a public repo. Everything under "remaining" is not done, and is listed
+  so nobody has to guess which is which.</p>
+
+  <div class="stats">
+    <div class="stat"><b>5</b><span>programs live on devnet</span></div>
+    <div class="stat"><b>21</b><span>integration tests passing</span></div>
+    <div class="stat"><b>1</b><span>SDK published on npm</span></div>
+    <div class="stat"><b>0</b><span>on mainnet — by design, pre-audit</span></div>
+  </div>
+
+  <div class="flow">Get test tokens &nbsp;<span class="neon">→</span>&nbsp; wrap a permissioned RWA &nbsp;<span class="neon">→</span>&nbsp; swap it in a gated AMM &nbsp;<span class="neon">→</span>&nbsp; unwrap. No signup.</div>
+
+  <div class="cols">
+    <div class="col">
+      <h2>Shipped</h2>
+
+      <h3>Protocol</h3>
+      <ul>
+        <li><b>passage_identity</b> — credential registry, one PDA per verified wallet</li>
+        <li><b>passage_hook</b> — Token-2022 transfer hook, checked on every transfer</li>
+        <li><b>passage_wrapper</b> — vault, wrap/unwrap 1:1, fee accrual</li>
+        <li><b>passage_pool</b> — gated constant-product AMM that trades hooked pTokens</li>
+        <li><b>passage_demo_faucet</b> — devnet only, so anyone can try it</li>
+        <li>21 tests including the negative cases: unverified wallets and unverified pools are both rejected</li>
+      </ul>
+
+      <h3>Public tooling</h3>
+      <ul>
+        <li><b>@passage_protocol/hook-kit</b> on npm, MIT — resolves transfer-hook accounts, including the CPI case the SPL library does not cover</li>
+        <li>Whole protocol open source under MIT</li>
+        <li>Playable demo wired to the live devnet deployment</li>
+      </ul>
+
+      <h3>Business groundwork</h3>
+      <ul>
+        <li>Launch document: raise, compensation, operating budget, risks</li>
+        <li>Revenue model — recurring fee on wrapped AUM, benchmarked against what issuers already pay</li>
+        <li>$PASS value accrual: treasury claim, staking as a slashable backstop, buyback-and-burn</li>
+        <li>Solana Foundation grant application written and costed</li>
+        <li>Brand, site, and a public presence</li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <h2>Remaining</h2>
+
+      <h3>Before mainnet</h3>
+      <ul class="todo">
+        <li><b>Security audit</b> of the four core programs, report published in full</li>
+        <li><b>Legal structuring</b> — MiCA for $PASS, securities law for the wrapped assets, and an operating entity</li>
+        <li><b>Confirm we stay out of scope</b> as a technology provider, with the issuer holding the licence</li>
+        <li><b>KYC provider integration</b> so credentials come from real verification instead of a devnet faucet</li>
+        <li><b>Mainnet deployment</b></li>
+      </ul>
+      <p class="gate">Nothing touches real assets until the audit and the legal opinion are both done.</p>
+
+      <h3>Before the ICO</h3>
+      <ul class="todo">
+        <li><b>Submit the grant</b> — written, not yet sent</li>
+        <li><b>Issuer conversations</b> — no relationship is signed today</li>
+        <li><b>Third-party KYC attestation</b> for the founder, so a pseudonymous raise still carries accountability</li>
+        <li><b>Presence in the MetaDAO ecosystem</b> before applying, not during</li>
+        <li><b>Audience</b> — currently small, and being rebuilt slowly rather than farmed</li>
+      </ul>
+
+      <h3>Funded by the raise</h3>
+      <ul class="todo">
+        <li><b>Second developer</b> — one person is a single point of failure</li>
+        <li><b>Two advisors</b> — legal/regulatory, and issuer relations</li>
+        <li>Reference guide and venue integration examples (grant milestones 2 and 4)</li>
+        <li>Lending-market integration, so pTokens work as collateral</li>
+        <li>$PASS staking and the buyback mechanism</li>
+      </ul>
+
+      <div class="box">
+        <b class="neon">The honest summary.</b> The protocol works and anyone can check it.
+        What it does not have is an audit, a legal structure, a signed issuer, or a
+        token — and those are exactly what the raise and the grant are for. Progress
+        is stated so it can be checked, not asserted.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>github.com/SewnRetirement/passage-protocol</span>
+    <span>sewnretirement.github.io/Passage-Protocol</span>
+    <span>x.com/passageRWA</span>
+  </footer>
+</body>
+</html>

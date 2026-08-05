@@ -23,13 +23,22 @@ by anyone without signing up.
 
 ## 2. What already exists (verifiable now, not promised)
 
-| Program | Devnet address | What it does |
-|---|---|---|
-| `passage_identity` | `8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup` | Credential registry, one PDA per verified wallet |
-| `passage_hook` | `2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf` | Token-2022 transfer hook; blocks transfers to unverified recipients |
-| `passage_wrapper` | `HuM2rUWj5qcuEAWRcGKmpHkh3qwY9Y1m6nsV2UAFxagX` | Vault: wrap/unwrap 1:1, fee accrual |
-| `passage_pool` | `2Sj66HHtHt2fkHQkpFSMyf71nZZ7iNELWnJiNHFo33aJ` | Constant-product AMM that trades hooked pTokens correctly |
-| `passage_demo_faucet` | `7e2xLqS525PMSrr1Wx6zqamcHCUvsaS3bGCZVmPA49XR` | Devnet only — gives visitors a credential and test tokens |
+All five are live on devnet and verifiable by address:
+
+**`passage_identity`** — credential registry, one PDA per verified wallet
+`8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup`
+
+**`passage_hook`** — Token-2022 transfer hook; blocks transfers to unverified recipients
+`2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf`
+
+**`passage_wrapper`** — vault: wrap/unwrap 1:1, fee accrual
+`HuM2rUWj5qcuEAWRcGKmpHkh3qwY9Y1m6nsV2UAFxagX`
+
+**`passage_pool`** — constant-product AMM that trades hooked pTokens correctly
+`2Sj66HHtHt2fkHQkpFSMyf71nZZ7iNELWnJiNHFo33aJ`
+
+**`passage_demo_faucet`** — devnet only; gives visitors a credential and test tokens
+`7e2xLqS525PMSrr1Wx6zqamcHCUvsaS3bGCZVmPA49XR`
 
 Anyone can reproduce the full path in a browser: get test tokens, wrap, swap in
 the gated AMM, unwrap. 21 integration tests cover it, including the negative
@@ -80,13 +89,28 @@ gap this closes.
 All four milestones produce open-source, MIT-licensed output that is useful
 independently of Passage's business.
 
-| # | Deliverable | Amount | Done when |
-|---|---|---|---|
-| 1 | **`@passage/hook-kit` TypeScript SDK** — core is **already built and verified** (see §5a). Remaining: publish to npm, stabilise the API, and test against transfer hooks other than our own | $10,000 | Published to npm under MIT, working against at least two third-party hooks |
-| 2 | **Reference implementation guide** — written walkthrough of building a transfer hook and consuming one from another program, covering the failure modes and the account-ordering rules that are currently folklore | $20,000 | Published openly, submitted to Solana developer docs, with a runnable example repo |
-| 3 | **Security audit of the four core programs**, report published in full including anything found | $40,000 | Audit complete, report public in the repo, findings fixed |
-| 4 | **Integration examples with two existing Solana DeFi venues**, showing what a venue has to change to accept hooked assets — published as PRs or standalone adapters | $25,000 | Both examples working on devnet, documented, code public |
-| | **Total** | **$95,000** | |
+**Milestone 1 — `@passage/hook-kit` TypeScript SDK · $10,000**
+The core is already built and verified, unfunded (see §5a). Remaining: publish to
+npm, stabilise the API, and test against transfer hooks other than our own.
+*Complete when:* on npm under MIT, working against at least two third-party hooks.
+
+**Milestone 2 — Reference implementation guide · $20,000**
+A written walkthrough of building a transfer hook and consuming one from another
+program, covering the failure modes and account-ordering rules that are currently
+folklore.
+*Complete when:* published openly, submitted to the Solana developer docs, with a
+runnable example repo.
+
+**Milestone 3 — Security audit of the four core programs · $40,000**
+Full report published, including anything found.
+*Complete when:* audit complete, report public in the repo, findings fixed.
+
+**Milestone 4 — Integration examples with two Solana DeFi venues · $25,000**
+Showing what a venue has to change to accept hooked assets, published as PRs or
+standalone adapters.
+*Complete when:* both working on devnet, documented, code public.
+
+**Total: $95,000**
 
 Milestone 3 is the largest line because an audit of this pattern benefits anyone
 who copies it. Hook programs sit in the path of every transfer, so a bug in the

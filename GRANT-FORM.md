@@ -93,13 +93,26 @@ and "usable in Solana DeFi" is the gap this closes.
 
 ## Budget and milestones
 
-| # | Deliverable | Amount | Complete when |
-|---|---|---|---|
-| 1 | @passage/hook-kit SDK — core already built and verified, unfunded. Remaining: publish to npm, stabilise the API, prove it against hooks we did not write | $10,000 | On npm under MIT, working against at least two third-party hooks |
-| 2 | Reference implementation guide — building a transfer hook and consuming one from another program, covering the failure modes and account-ordering rules that are currently folklore | $20,000 | Published openly, submitted to Solana developer docs, runnable example repo |
-| 3 | Security audit of the four core programs, full report published including anything found | $40,000 | Audit complete, report public in the repo, findings fixed |
-| 4 | Integration examples with two existing Solana DeFi venues, showing what a venue must change to accept hooked assets | $25,000 | Both working on devnet, documented, code public |
-| | **Total** | **$95,000** | |
+Milestone 1 — @passage/hook-kit SDK — $10,000
+Core already built and verified, unfunded. Remaining: publish to npm, stabilise
+the API, prove it against hooks we did not write.
+Complete when: on npm under MIT, working against at least two third-party hooks.
+
+Milestone 2 — Reference implementation guide — $20,000
+Building a transfer hook and consuming one from another program, covering the
+failure modes and account-ordering rules that are currently folklore.
+Complete when: published openly, submitted to Solana developer docs, runnable
+example repo.
+
+Milestone 3 — Security audit of the four core programs — $40,000
+Full report published, including anything found.
+Complete when: audit complete, report public in the repo, findings fixed.
+
+Milestone 4 — Integration examples with two Solana DeFi venues — $25,000
+Showing what a venue must change to accept hooked assets.
+Complete when: both working on devnet, documented, code public.
+
+Total: $95,000
 
 Milestone 3 is the largest line because an audit of this pattern benefits anyone
 who copies it. A hook program sits in the path of every transfer, so a bug in the

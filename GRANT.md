@@ -5,7 +5,7 @@
 **Repo:** https://github.com/SewnRetirement/passage-protocol
 **Live demo (devnet):** https://sewnretirement.github.io/Passage-Protocol/
 **Track requested:** Convertible grant — public good with a commercial component
-**Amount requested:** $110,000, milestone-based
+**Amount requested:** $95,000, milestone-based
 **Raising elsewhere:** Yes. A futarchy ICO on MetaDAO is planned (min $1.8M, capped $4M). See "How this relates to the raise" below — the two fund different things and we are explicit about which.
 
 ---
@@ -82,15 +82,39 @@ independently of Passage's business.
 
 | # | Deliverable | Amount | Done when |
 |---|---|---|---|
-| 1 | **`@passage/hook-kit` TypeScript SDK** — resolves `ExtraAccountMetaList` and builds hook-aware transfer, swap and CPI instructions for any hooked Token-2022 mint, not just ours | $25,000 | Published to npm, MIT, with tests and a worked example against a third-party hook |
+| 1 | **`@passage/hook-kit` TypeScript SDK** — core is **already built and verified** (see §5a). Remaining: publish to npm, stabilise the API, and test against transfer hooks other than our own | $10,000 | Published to npm under MIT, working against at least two third-party hooks |
 | 2 | **Reference implementation guide** — written walkthrough of building a transfer hook and consuming one from another program, covering the failure modes and the account-ordering rules that are currently folklore | $20,000 | Published openly, submitted to Solana developer docs, with a runnable example repo |
 | 3 | **Security audit of the four core programs**, report published in full including anything found | $40,000 | Audit complete, report public in the repo, findings fixed |
 | 4 | **Integration examples with two existing Solana DeFi venues**, showing what a venue has to change to accept hooked assets — published as PRs or standalone adapters | $25,000 | Both examples working on devnet, documented, code public |
-| | **Total** | **$110,000** | |
+| | **Total** | **$95,000** | |
 
 Milestone 3 is the largest line because an audit of this pattern benefits anyone
 who copies it. Hook programs sit in the path of every transfer, so a bug in the
 pattern is a bug in every token that adopts it.
+
+### 5a. What we built before asking for anything
+
+Milestone 1 is largely done and it was done unfunded, so this application can be
+judged on delivered work rather than intent.
+
+**`@passage/hook-kit`** ([`sdk/hook-kit`](https://github.com/SewnRetirement/passage-protocol/tree/main/sdk/hook-kit))
+resolves transfer-hook accounts for any hooked Token-2022 mint — and covers the
+case `@solana/spl-token` does not: when *your own program* performs the transfer
+by CPI and needs those accounts as `remaining_accounts`. Every AMM, vault and
+lending market that wants to touch a hooked token hits this and currently solves
+it by hand.
+
+It also turns the two failure modes that cost developers an afternoon into
+readable errors and documentation: the destination token account must exist
+before resolution, because hooks read data out of it; and a receiving pool PDA is
+itself a recipient that must satisfy the hook. Both are undocumented today.
+
+Eleven checks pass against the live devnet deployment, asserting that the
+accounts it resolves are exactly the ones our working AMM passes by hand.
+
+The remaining $10,000 on milestone 1 is for the part that makes it a public good
+rather than our internal tool: publishing to npm, stabilising the API, and
+proving it against hooks we did not write.
 
 ## 6. How this relates to the MetaDAO raise
 

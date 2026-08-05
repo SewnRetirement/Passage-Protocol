@@ -1,0 +1,33 @@
+{
+  "name": "@passage/hook-kit",
+  "version": "0.1.0",
+  "description": "Resolve Token-2022 transfer-hook accounts — including the CPI case the SPL library does not cover",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "README.md"],
+  "keywords": [
+    "solana",
+    "token-2022",
+    "transfer-hook",
+    "extra-account-meta",
+    "spl-token"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SewnRetirement/passage-protocol.git",
+    "directory": "sdk/hook-kit"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.95.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

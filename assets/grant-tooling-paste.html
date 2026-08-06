@@ -1,0 +1,232 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<title>Passage — Developer Tooling proposal</title><style>
+  body { font-family: Arial, 'Helvetica Neue', sans-serif; font-size: 11pt; line-height: 1.5;
+         color: #111; max-width: 800px; margin: 40px auto; padding: 0 24px; background: #fff; }
+  h1 { font-size: 20pt; margin-bottom: 4px; }
+  h2 { font-size: 14pt; margin-top: 26px; margin-bottom: 8px; }
+  h3 { font-size: 12pt; margin-top: 18px; margin-bottom: 6px; }
+  p { margin: 0 0 10px; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 12px; }
+  th, td { border: 1px solid #bbb; padding: 6px 8px; text-align: left; font-size: 10pt; }
+  th { background: #f0f0f0; }
+  code { font-family: 'Courier New', monospace; font-size: 10pt; background: #f4f4f4; padding: 1px 3px; }
+  pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+  ul { margin: 0 0 10px 0; padding-left: 22px; }
+  li { margin-bottom: 4px; }
+  hr { border: none; border-top: 1px solid #ccc; margin: 18px 0; }
+  a { color: #1155cc; }
+</style></head><body>
+<h1>Passage — Developer Tooling proposal</h1>
+<p><strong>Tool name:</strong> <code>@passage_protocol/hook-kit</code> and the transfer-hook reference materials
+<strong>Applicant:</strong> Passage Protocol
+<strong>Repo:</strong> https://github.com/SewnRetirement/passage-protocol
+<strong>Package:</strong> https://www.npmjs.com/package/@passage_protocol/hook-kit
+<strong>Licence:</strong> MIT
+<strong>Requested:</strong> $95,000, milestone-based</p>
+<hr />
+<h2>1. Problem statement</h2>
+<p>Token-2022 transfer hooks let a program run arbitrary logic inside every transfer.
+They are the mechanism behind compliance-gated assets, royalty enforcement, transfer
+limits and allowlisted tokens on Solana. They are also the least-documented extension
+in the token program, and the difficulty is not where developers expect it.</p>
+<p>Writing a hook is straightforward. The friction is entirely on the <strong>calling</strong> side.</p>
+<p>A hook declares the extra accounts it needs in an on-chain <code>ExtraAccountMetaList</code>, a
+TLV-encoded account at <code>["extra-account-metas", mint]</code> under the hook program. Each
+entry can be a fixed pubkey, a PDA of the hook program, or a PDA of a <em>different</em>
+program, and its seeds can be literal bytes, another account's key, a slice of
+<strong>instruction data</strong>, or a slice of <strong>account data at a specific byte offset</strong>.
+Resolving them means reading the list, walking each entry, fetching whatever accounts
+the seeds point at, deriving the addresses, and appending them in the position the
+callee expects.</p>
+<p>Get any of it wrong and the CPI fails with <code>AccountNotFound</code> or a bare
+<code>ProgramFailedToComplete</code>. Nothing in the error identifies which account was missing
+or why.</p>
+<p><code>@solana/spl-token</code> handles one case: a plain top-level <code>transfer_checked</code> where the
+SPL library builds the whole instruction. That covers wallets and simple transfers.</p>
+<p><strong>It does not cover the case that matters for tooling:</strong> when <em>your own program</em>
+performs the transfer via CPI — <code>spl_token_2022::onchain::invoke_transfer_checked</code> on
+the Rust side — and therefore needs those same accounts passed as
+<code>remaining_accounts</code> on <em>your</em> instruction. There is no helper for this. Every AMM,
+vault, lending market, escrow or router that wants to support hooked assets writes
+the resolution logic again, by hand, usually after losing a day to it.</p>
+<p>The practical result is that hooked tokens are supported almost nowhere. The
+extension exists, but the ecosystem around it does not, and the gap is developer
+experience rather than protocol capability.</p>
+<h2>2. What we have already built and shipped</h2>
+<p>All of the following is public, MIT-licensed and live before this application.</p>
+<p><strong><code>@passage_protocol/hook-kit</code></strong> — published on npm. A dependency-light TypeScript
+package that resolves transfer-hook accounts for any hooked Token-2022 mint.</p>
+<pre><code class="language-ts">import { hookAccountsForCpi } from '@passage_protocol/hook-kit';
+
+const remaining = await hookAccountsForCpi(connection, {
+  mint, source, destination, owner, amount: 1_000_000n,
+});
+
+const ix = await program.methods.swap(amountIn, minOut, true)
+  .accounts({ /* ... */ })
+  .remainingAccounts(remaining)
+  .instruction();
+</code></pre>
+<p>Public API:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getHookProgramId(connection, mint, tokenProgramId?, commitment?)</code></td>
+<td>The hook program, or <code>null</code></td>
+</tr>
+<tr>
+<td><code>hasTransferHook(connection, mint, ...)</code></td>
+<td><code>boolean</code>, for branching before you build</td>
+</tr>
+<tr>
+<td><code>getMetaListAddress(mint, hookProgramId)</code></td>
+<td>The <code>ExtraAccountMetaList</code> PDA</td>
+</tr>
+<tr>
+<td><code>resolveHookAccounts(connection, ctx)</code></td>
+<td>The resolved extras only</td>
+</tr>
+<tr>
+<td><code>hookAccountsForCpi(connection, ctx)</code></td>
+<td><code>[hookProgram, metaList, ...extras]</code> for <code>remaining_accounts</code></td>
+</tr>
+<tr>
+<td><code>appendHookAccounts(connection, ix, ctx)</code></td>
+<td>Instruction with extras appended in top-level order</td>
+</tr>
+</tbody>
+</table>
+<p>Two design decisions worth noting. Every function returns an empty array or a no-op
+when the mint has no hook, so callers do not have to branch on whether hooks are
+involved. And the two failure modes that cost developers the most time are turned
+into a typed <code>HookResolutionError</code> with an explanation rather than a bare not-found:</p>
+<ol>
+<li>
+<p><strong>The destination token account must exist before resolution.</strong> Hooks commonly
+   derive a PDA from bytes inside the destination account — its owner field, to look
+   up a credential or allowlist entry. Resolution reads that account off-chain, ahead
+   of the transaction. If the destination ATA is created in the same transaction being
+   built, it does not exist yet and resolution fails. The error now says which account
+   is missing and that it must be created in an earlier, confirmed transaction.</p>
+</li>
+<li>
+<p><strong>A receiving program is itself a recipient.</strong> If a hook gates on the recipient,
+   then a pool, vault or lending market receiving the token must satisfy the same
+   rule — its PDA needs whatever the hook checks for. A swap that fails for no
+   apparent reason is very often this. Documented prominently.</p>
+</li>
+</ol>
+<p><strong><code>passage_pool</code></strong> — a working constant-product AMM that trades a transfer-hooked
+Token-2022 mint, live on devnet. As far as we can find it is one of very few public,
+tested examples of the full pattern: CPI transfer through the hook, correct
+remaining-account ordering, and the pool PDA holding its own credential.</p>
+<p><strong>Verification.</strong> Eleven checks run <code>hook-kit</code> against the live devnet deployment and
+assert that the accounts it resolves are byte-for-byte the ones the working AMM passes
+by hand. Twenty-one integration tests cover the four protocol programs, including the
+negative cases — an unverified wallet cannot receive the token, and an unverified pool
+cannot be traded into.</p>
+<p>This was all built without funding. The application can be assessed on delivered work.</p>
+<h2>3. What the grant funds</h2>
+<h3>Milestone 1 — Harden and generalise the SDK · $10,000</h3>
+<p>The core is done. Remaining work is what turns an internal tool into a public one.</p>
+<ul>
+<li>Stabilise the API surface and commit to semver</li>
+<li>Test against transfer hooks we did not write — at minimum two third-party hooks
+  with different <code>ExtraAccountMetaList</code> shapes, including instruction-data seeds and
+  nested external PDAs, which our own hook does not exercise</li>
+<li>Add a resolution-tracing mode that prints each meta, the seeds used, and the derived
+  address, so a failure can be diagnosed without reading the TLV by hand</li>
+<li>CI against devnet, published coverage</li>
+</ul>
+<p><strong>Complete when:</strong> on npm under MIT with a stable API, working against at least two
+third-party hooks, with tests demonstrating each.</p>
+<h3>Milestone 2 — Reference implementation guide · $20,000</h3>
+<p>A written guide covering the whole path, which does not currently exist anywhere:
+writing a hook, declaring extra accounts, and — the part that is entirely folklore —
+consuming a hooked token from another program.</p>
+<p>Contents: the account layout Token-2022 passes to <code>Execute</code>; every <code>Seed</code> variant with
+a worked example; account ordering for the top-level and CPI cases and why they
+differ; <code>invoke_transfer_checked</code> and what it expects in <code>additional_accounts</code>; the
+failure modes and what each error actually means; and compute-budget guidance, since
+hook CPIs push transactions past the default limit.</p>
+<p>Accompanied by a runnable example repo: a minimal hook, a minimal program that
+consumes it, and tests.</p>
+<p><strong>Complete when:</strong> published openly under MIT, submitted as a contribution to the
+Solana developer documentation, example repo public and running in CI.</p>
+<h3>Milestone 3 — Security audit, published in full · $40,000</h3>
+<p>An audit of the four core programs by a recognised Solana firm, with the complete
+report published in the repo including anything found and the fixes.</p>
+<p>This is the largest line because a hook program sits in the path of every transfer of
+its mint. A flaw in the pattern is a flaw in every token that adopts it, and the
+pattern is what we are asking the ecosystem to reuse. An audit of a reference
+implementation is worth more than an audit of one project.</p>
+<p><strong>Complete when:</strong> audit complete, report public, findings resolved.</p>
+<h3>Milestone 4 — Venue integration examples · $25,000</h3>
+<p>Two worked examples showing what an existing Solana DeFi venue has to change to accept
+hooked assets, published as pull requests to those projects where they will take them,
+or as standalone adapters where they will not.</p>
+<p>This is the step that turns the tooling into adoption. Today a venue that wants to
+list a hooked token has to discover all of the above independently; these examples
+reduce that to reading a diff.</p>
+<p><strong>Complete when:</strong> both working on devnet, documented, code public.</p>
+<p><strong>Total: $95,000</strong></p>
+<h2>4. Why this belongs in Developer Tooling</h2>
+<p>The protocol we build on top of this is a business. The four deliverables above are
+not: they are equally useful to a gaming project enforcing royalties, a loyalty
+programme enforcing transfer limits, or a competing RWA protocol. If Passage fails
+commercially, all four still exist and still work.</p>
+<p>We are explicit about the boundary. Passage plans a separate raise (a futarchy ICO on
+MetaDAO, minimum $1.8M) which funds salaries, legal structuring, issuer relations and
+the commercial side. None of that is requested here, and none of these milestones is
+Passage-specific.</p>
+<h2>5. Why Solana</h2>
+<p>Transfer hooks have no equivalent on other chains. The ERC-3643 and ERC-1400 approach
+enforces at the token contract, so every venue must integrate the standard explicitly
+before it can hold the asset — which is why permissioned assets on those chains stay
+in closed venues. On Solana the rule executes inside the token program and therefore
+binds programs written before the token existed.</p>
+<p>The economics only work here as well: a check on every transfer is viable at a
+fraction of a cent and is not at higher fees.</p>
+<p>This makes hooks a genuine Solana differentiator — and one that is currently
+underused because the tooling around it is missing rather than because the mechanism
+is inadequate. That gap is what this proposal closes.</p>
+<h2>6. Team and maintenance</h2>
+<p>One developer today, working pseudonymously as @passageRWA, verified by a third-party
+KYC attestation provider. Two people are joining in community and partnerships roles.
+A second Solana developer is budgeted and being recruited — stated plainly because a
+single maintainer is a real risk for a package other teams would depend on.</p>
+<p>Maintenance commitment: <code>hook-kit</code> is MIT and lives in a public repo. We will keep it
+current with <code>@solana/spl-token</code> and Token-2022 changes, respond to issues, and — if
+the project ever winds down — transfer the package to the Foundation or another
+maintainer rather than let it rot on npm.</p>
+<h2>7. Success metrics</h2>
+<p>Deliberately external and checkable rather than self-reported:</p>
+<ul>
+<li>The SDK works against transfer hooks written by teams other than us, demonstrated
+  in tests — the direct measure of whether it is a public good or an internal tool</li>
+<li>The reference guide is accepted into the Solana developer documentation</li>
+<li>The audit report is public, in full</li>
+<li>At least one venue integration is merged upstream or adopted</li>
+<li>npm downloads and dependent repositories, reported honestly including that
+  transfer-hook usage is still niche and early numbers will be small</li>
+</ul>
+<h2>8. Links</h2>
+<ul>
+<li>Repo: https://github.com/SewnRetirement/passage-protocol</li>
+<li>SDK source: https://github.com/SewnRetirement/passage-protocol/tree/main/sdk/hook-kit</li>
+<li>npm: https://www.npmjs.com/package/@passage_protocol/hook-kit</li>
+<li>Playable devnet demo: https://sewnretirement.github.io/Passage-Protocol/</li>
+</ul>
+<p>Devnet program IDs: <code>8ueut8DShZXteSLKq4VbQtWyw5eXGNS1efUxyKNKGpup</code> (identity),
+<code>2t8mRopezLdyJLDgcD2ufS4LnL1YVeZopzhddwZc13Nf</code> (hook),
+<code>HuM2rUWj5qcuEAWRcGKmpHkh3qwY9Y1m6nsV2UAFxagX</code> (wrapper),
+<code>2Sj66HHtHt2fkHQkpFSMyf71nZZ7iNELWnJiNHFo33aJ</code> (pool),
+<code>7e2xLqS525PMSrr1Wx6zqamcHCUvsaS3bGCZVmPA49XR</code> (demo faucet).</p>
+</body></html>

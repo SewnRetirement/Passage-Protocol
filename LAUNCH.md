@@ -99,26 +99,48 @@ other decision.
 
 ## 4. The raise
 
-- **Minimum:** $1.8M (18 months of runway: 2 devs, 2 advisors, audit ~$40k, legal/regulatory ~$60k, KYC integration, listings)
+- **Minimum:** $1.8M (18 months of runway: 2 devs, 2 leads, audit ~$40k, legal/regulatory ~$60k, KYC integration, listings)
 - **Cap: $4M.** If commitments exceed the cap, allocations are pro-rata and the excess is refunded in USDC at TGE (MetaDAO standard)
 - 10M $PASS, high float, no hidden allocations
 
-## 5. Founder compensation (fixed up front — you consent by participating)
+## 5. Team compensation (fixed up front — you consent by participating)
+
+**Founder**
 
 | Component | Size | Condition |
 |---|---|---|
-| Founder salary | $16k/month | monthly budget, from day 1 |
-| Advisors (2x, part-time) | $5k/month each | named roles: legal/regulatory (MiCA + securities law) and RWA/issuer relations — part of the pre-approved operating budget |
+| Salary | $16k/month | monthly budget, from day 1 |
 | Milestone bonus 1 | 5% of the raise | mainnet live + first RWA asset wrapped |
 | Milestone bonus 2 | 5% of the raise | $5M Total Value Wrapped |
 | Milestone bonus 3 | 7.5% of the raise | $25M Total Value Wrapped |
 | Milestone bonus 4 | 7.5% of the raise | $250k cumulative protocol revenue |
-| Performance tokens | 10% of supply (1M) | tranches at 2x / 4x / 8x, ≥18 months vesting |
 
 Milestone bonuses are calculated over **at most the first $4M of the raise** (hard cap
-$1M total), so an oversubscribed raise never inflates team compensation.
+$1M total), so an oversubscribed raise never inflates team compensation. They go to
+the founder alone: they compensate building the protocol and carrying the risk before
+any money existed, which nobody else did.
 
-Rationale: bonuses are paid from the **treasury in USDC**, not from token sales — no
+**Performance tokens — 10% of supply (1M $PASS)**
+
+| Recipient | Allocation | Share |
+|---|---|---|
+| Founder | 600,000 | 60% |
+| Community lead | 150,000 | 15% |
+| Marketing & partnerships lead | 150,000 | 15% |
+| Reserved for the second developer | 100,000 | 10% |
+
+Terms are identical for everyone including the founder: tranches unlock at **2x / 4x /
+8x** above the ICO price, and nothing unlocks before **18 months** regardless of price.
+Leave before then and the allocation returns to the pool.
+
+The reserved 100,000 is not spare capacity to be handed out later for goodwill — it is
+held for the second developer, because one technical person is the single largest
+risk in this project and hiring should not require reopening this table.
+
+**Salaries** (all from the pre-approved monthly budget in §6): founder $16k, community
+lead $7k, marketing & partnerships lead $7k, second developer $10k once hired.
+
+Bonuses and salaries are paid from the **treasury in USDC**, not from token sales — no
 sell pressure on $PASS. Each bonus requires a futarchy proposal; by fixing this table
 here, participants know exactly what the team earns and when.
 
@@ -127,22 +149,35 @@ here, participants know exactly what the team earns and when.
 | Item | Monthly |
 |---|---|
 | Founder salary | $16k |
+| Community lead | $7k |
+| Marketing & partnerships lead | $7k |
 | Second developer | $10k |
-| Advisors (2x, part-time) | $10k |
-| Marketing & community (content, KOLs, events) | $8k |
+| Moderators (3–4, part-time) | $2k |
+| Freelancers (design, content, video, translation) | $2.5k |
+| Marketing & community spend (content, events, sponsorships) | $6k |
 | Infrastructure & tooling (RPC, hosting, indexing, monitoring) | $1.5k |
 | KYC provider (verification costs) | $1k |
 | Entity, accounting, admin | $1.5k |
 | Contingency | $2k |
-| **Total** | **~$50k/month** |
+| **Total** | **~$56.5k/month** |
+
+Moderators and freelancers are deliberately a budget line rather than headcount. A
+community that needs four moderators is a good problem, and one that does not need
+them yet should not be paying for them — the line scales with reality, and unspent
+budget stays in the treasury.
 
 One-time costs: audit $40k · legal structuring, MiCA + securities $60k · entity setup $15k ·
 listings & integrations $30k · bug bounty program $20k · founder KYC attestation $5k ≈ **$170k**.
 
-Math: 18 months x $50k + $170k ≈ **$1.07M**. Of the $1.8M minimum raise, 20%
+Math: 18 months x $56.5k + $170k ≈ **$1.19M**. Of the $1.8M minimum raise, 20%
 ($360k) seeds liquidity pools per the MetaDAO model, leaving $1.44M of treasury —
-a ~$370k buffer on top of the full budget. Any spend above the pre-approved
+a ~$250k buffer on top of the full budget. Any spend above the pre-approved
 budget requires a futarchy proposal.
+
+Stated plainly: adding two salaried leads costs roughly $120k over the 18 months and
+takes the buffer from ~$370k to ~$250k. That is a deliberate trade. A protocol that
+nobody knows about does not need a runway, and the two roles being funded here —
+community and issuer relations — are the ones that decide whether anything gets used.
 
 ## 7. Post-launch roadmap
 
@@ -202,16 +237,31 @@ Everything claimed in this document is verifiable today rather than promised:
 five programs live on devnet, 21 passing tests including the compliance checks,
 and a public demo anyone can use without asking permission.
 
-**Hiring with the raise**
+**Community lead** and **Marketing & partnerships lead**
 
-| Role | When | Why |
-|---|---|---|
-| Second Solana developer | month 1 | Removes the single point of failure before mainnet |
-| Advisor — legal / regulatory (MiCA + securities law) | month 1 | Wrapped securities stay securities; the structure has to be right before mainnet |
-| Advisor — RWA / issuer relations | month 1 | The whole business depends on issuers saying yes; that needs someone with the relationships |
+Two people are joining in these roles, salaried from the raise and holding
+performance tokens on the same terms as the founder (§5). Both are known to the
+founder personally and both bring directly relevant experience — one has run
+community for a crypto project, the other was a developer on one and moves into
+partnerships and go-to-market.
 
-Both advisor seats are part-time at $5k/month and are budgeted in §6. They are
-named roles with a defined mandate, not decorative advisors paid in tokens.
+The community lead owns presence in the ecosystems that matter, moderation as the
+community grows, and the audience runway into the launch. The marketing &
+partnerships lead owns positioning, issuer conversations, and venue integrations.
+
+Neither allocation is final on day one: the first three months are a trial for both
+sides, and token allocations are provisional until it ends. Nothing unlocks before 18
+months regardless.
+
+**Still to hire**
+
+A **second Solana developer**, budgeted at $10k/month with 100,000 performance
+tokens reserved. This is the most important open seat: one technical person is the
+single largest risk in the project, and it is unaddressed until this is filled.
+
+Legal and regulatory work is bought in rather than hired — a firm, engaged for the
+MiCA and securities structuring, budgeted as a one-time cost in §6. That is a
+specialist opinion, not a part-time seat.
 
 **What this team does not yet have**
 

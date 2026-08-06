@@ -249,9 +249,10 @@ The community lead owns presence in the ecosystems that matter, moderation as th
 community grows, and the audience runway into the launch. The marketing &
 partnerships lead owns positioning, issuer conversations, and venue integrations.
 
-Neither allocation is final on day one: the first three months are a trial for both
-sides, and token allocations are provisional until it ends. Nothing unlocks before 18
-months regardless.
+Both are contributing before the raise, unpaid, which doubles as the trial period for
+either side to walk away. Allocations are fixed in a written agreement before the
+MetaDAO launch opens — the point at which real money and tokens start existing, and
+the last moment it can still be discussed calmly.
 
 **Still to hire**
 

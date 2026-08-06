@@ -90,28 +90,39 @@ staan.
 Binnen dat budget bepalen jullie zelf wie je inhuurt en waarvoor. Grotere uitgaven
 lopen via een futarchy-voorstel, net als bij mij.
 
-## Drie maanden proef
+## De periode tot de launch
 
-De eerste drie maanden zijn een proefperiode, voor beide kanten. De
-token-allocaties staan in die periode voorlopig vast en worden daarna definitief
-gemaakt.
+Jullie hebben aangeboden om nu al mee te helpen, zonder betaling, omdat er nog
+geen geld is. Dat is precies hoe we het doen — en die periode is meteen de
+proefperiode, van beide kanten. Geen apart traject met beoordelingsmomenten
+erbij; gewoon samen werken en merken of het klikt.
 
-Dat is niet omdat ik jullie niet vertrouw. Het is omdat niemand van tevoren weet
-of een rol past, en omdat het een stuk makkelijker is om er na drie maanden
-eerlijk over te praten als we dat vooraf hebben afgesproken. Werkt het niet, dan
-stopt het zonder gedoe.
+Twee dingen wil ik daar wel bij zeggen.
+
+Ten eerste: **dit is echt onbetaald, en de raise kan mislukken.** Als er geen geld
+komt, is er ook geen salaris met terugwerkende kracht en zijn de tokens niks waard.
+Dat risico nemen jullie, en ik vind het te makkelijk om dat onvermeld te laten.
+
+Ten tweede: **de allocatie hierboven staat er niet omdat jullie gratis werken.** Ze
+staat er omdat de rollen dat waard zijn. Ik wil niet dat iemand later het gevoel
+heeft dat vooruit werken de prijs was voor een plek aan tafel.
 
 Los daarvan: er komt sowieso niets vrij vóór de 18 maanden om.
 
-## Op papier
+## Op papier — vóór de MetaDAO-launch
 
-Voordat iemand begint zetten we dit in een simpele overeenkomst — rollen,
-salaris, tokens, de wachttijd, en wat er gebeurt bij vertrek.
+Zolang er niks te verdelen is, hoeft er niks getekend te worden. Maar er is één
+moment waarop het wél moet: **voordat de MetaDAO-launch live gaat.** Dat is het
+punt waarop er echt geld en tokens in het spel komen, en daarna is het te laat om
+er nog rustig over te praten.
+
+Dan leggen we vast: rollen, salaris, token-allocatie, de wachttijd van 18 maanden,
+en wat er gebeurt als iemand ermee stopt.
 
 Niet omdat ik jullie wantrouw, maar precies andersom: onduidelijkheid over geld is
 de standaardmanier waarop zowel bedrijven als vriendschappen kapotgaan. Ik zou het
 vervelend vinden om over twee jaar te ontdekken dat we er verschillende beelden bij
-hadden.
+hadden — juist met jullie.
 
 ## Wat er nu moet gebeuren
 
